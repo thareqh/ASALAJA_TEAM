@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SehatDesa Station — Kios Pemeriksaan Kesehatan Mandiri Lansia</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 <div class="app-container">
@@ -163,6 +164,87 @@
                     </div>
 
                 </div><!-- /kiosk-screen -->
+
+                <!-- ═══ Simulator Controls ═══════════════════════════════ -->
+                <div style="padding: 12px 16px; border-top: 1px solid var(--border); background: var(--bg-secondary);">
+                    <p style="font-size: 10px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">
+                        ⚙ Panel Simulasi Demo
+                    </p>
+
+                    <!-- Step 1: Select Patient QR -->
+                    <div style="margin-bottom: 10px;">
+                        <label class="sim-form-label">1. Pilih Pasien (Scan QR)</label>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <select id="sim-patient-select" class="sim-select" style="flex: 1;">
+                                <option value="">-- Pilih Kartu QR Pasien --</option>
+                            </select>
+                            <button class="btn btn-outline" onclick="triggerSimQR()" style="flex:none; padding: 5px 10px; font-size: 11px; white-space: nowrap;">
+                                Scan QR
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Vitals -->
+                    <div style="margin-bottom: 10px;">
+                        <label class="sim-form-label">2. Vital Sign</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+                            <div>
+                                <label class="sim-form-label" style="font-size: 9px;">HR (bpm)</label>
+                                <div style="display:flex; align-items:center; gap:4px;">
+                                    <input type="range" id="sim-hr" min="40" max="140" value="78" step="1" style="flex:1; accent-color:var(--primary);">
+                                    <span id="sim-hr-val" style="font-size:10px; font-weight:600; color:var(--text-primary); min-width:26px;">78</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="sim-form-label" style="font-size: 9px;">SpO₂ (%)</label>
+                                <div style="display:flex; align-items:center; gap:4px;">
+                                    <input type="range" id="sim-spo2" min="80" max="100" value="97" step="1" style="flex:1; accent-color:var(--primary);">
+                                    <span id="sim-spo2-val" style="font-size:10px; font-weight:600; color:var(--text-primary); min-width:26px;">97</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="sim-form-label" style="font-size: 9px;">Suhu (°C)</label>
+                                <div style="display:flex; align-items:center; gap:4px;">
+                                    <input type="range" id="sim-temp" min="35.0" max="40.0" value="36.6" step="0.1" style="flex:1; accent-color:var(--primary);">
+                                    <span id="sim-temp-val" style="font-size:10px; font-weight:600; color:var(--text-primary); min-width:28px;">36.6</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:4px; margin-bottom:6px;">
+                            <button class="preset-chip" data-vpreset onclick="loadVitalsPreset('normal')" style="flex:1; font-size:9px; padding:3px 6px;">Normal</button>
+                            <button class="preset-chip" data-vpreset onclick="loadVitalsPreset('fever')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--amber);">Demam</button>
+                            <button class="preset-chip" data-vpreset onclick="loadVitalsPreset('hypoxia')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--red);">Hipoksia</button>
+                        </div>
+                        <button class="btn btn-outline" onclick="triggerSimVitals()" style="width:100%; padding:5px; font-size:11px;">
+                            Rekam Vital Sign →
+                        </button>
+                    </div>
+
+                    <!-- Step 3: Thermal -->
+                    <div style="margin-bottom: 10px;">
+                        <label class="sim-form-label">3. Thermal Kaki</label>
+                        <div style="display:flex; gap:4px; margin-bottom:6px;">
+                            <button class="preset-chip active" data-case="normal" onclick="document.querySelectorAll('[data-case]').forEach(b=>b.classList.remove('active')); this.classList.add('active')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--green);">Normal</button>
+                            <button class="preset-chip" data-case="inflammatory" onclick="document.querySelectorAll('[data-case]').forEach(b=>b.classList.remove('active')); this.classList.add('active')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--red);">Inflamasi</button>
+                            <button class="preset-chip" data-case="ischemic" onclick="document.querySelectorAll('[data-case]').forEach(b=>b.classList.remove('active')); this.classList.add('active')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--amber);">Iskemia</button>
+                            <button class="preset-chip" data-case="neuropathic" onclick="document.querySelectorAll('[data-case]').forEach(b=>b.classList.remove('active')); this.classList.add('active')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--primary);">Neuropati</button>
+                        </div>
+                        <button class="btn btn-primary" onclick="triggerSimThermal()" style="width:100%; padding:5px; font-size:11px;">
+                            Proses &amp; Simpan →
+                        </button>
+                    </div>
+
+                    <!-- Auto Demo + Reset -->
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn btn-outline" onclick="runDemoWorkflow()" style="flex:1; padding:5px; font-size:10px;">
+                            ⚡ Auto Demo
+                        </button>
+                        <button class="btn btn-outline" onclick="triggerReset()" style="flex:none; padding:5px 10px; font-size:10px; color:var(--red); border-color:var(--red-border);">
+                            Reset
+                        </button>
+                    </div>
+                </div><!-- /simulator controls -->
+
             </div><!-- /kiosk-mirror-card -->
         </div><!-- /side-panel -->
 
@@ -277,6 +359,58 @@
                 </div>
                 <button class="btn btn-primary" type="submit" style="margin-top:4px;">Simpan Data Warga</button>
             </form>
+
+            <!-- QR Code Success View -->
+            <div id="register-success-qr" style="display:none; flex-direction:column; gap:14px; text-align:center; align-items:center; padding:10px 0;">
+                <div style="color: var(--teal); font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; justify-content: center;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Pendaftaran Berhasil!
+                </div>
+                
+                <div id="reg-qrcode-container" style="background:#ffffff; padding:16px; border-radius:12px; border:1px solid var(--border); display:inline-block; box-shadow:0 4px 12px rgba(0,0,0,0.05); margin: 0 auto;"></div>
+                
+                <div>
+                    <div id="reg-success-name" style="font-size: 15px; font-weight: 700; color: var(--text-1);"></div>
+                    <div id="reg-success-id" style="font-size: 11px; font-family: monospace; color: var(--text-2); margin-top: 2px;"></div>
+                </div>
+
+                <div style="display:flex; gap:6px; width:100%; margin-top:8px;">
+                    <button class="btn btn-outline" onclick="downloadRegisteredQR()" style="flex:1; padding:7px; font-size:11px;">
+                        ⬇️ Unduh QR
+                    </button>
+                    <button class="btn btn-outline" onclick="printRegisteredQR()" style="flex:1; padding:7px; font-size:11px;">
+                        🖨️ Cetak
+                    </button>
+                </div>
+                
+                <button class="btn btn-primary" onclick="resetRegistrationForm()" style="width:100%; padding:8px; font-size:12px; margin-top:6px;">
+                    Daftar Warga Lain
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ QR Code Viewer Modal ══════════════════════════════════════════ -->
+    <div id="qr-viewer-modal" class="modal-overlay" style="display:none;">
+        <div class="glass-panel" style="width:300px; padding:20px; text-align:center; display:flex; flex-direction:column; gap:16px; border-color:var(--border); background:var(--surface); color:var(--text-1);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:8px;">
+                <span style="font-weight:600; font-size:11px; color:var(--text-2); text-transform:uppercase; letter-spacing:0.5px;">Kartu QR Warga</span>
+                <button onclick="closeQRModal()" style="background:none; border:none; font-size:18px; color:var(--text-3); cursor:pointer; line-height:1;">×</button>
+            </div>
+            
+            <div id="modal-qrcode-container" style="background:#ffffff; padding:16px; border-radius:12px; border:1px solid var(--border); display:inline-block; margin:0 auto; box-shadow:0 4px 12px rgba(0,0,0,0.05);"></div >
+            
+            <div>
+                <div id="modal-qr-name" style="font-size:16px; font-weight:700; color:var(--text-1);"></div>
+                <div id="modal-qr-id" style="font-size:11px; font-family:monospace; color:var(--text-2); margin-top:2px;"></div>
+            </div>
+            
+            <div style="display:flex; gap:8px; width:100%;">
+                <button class="btn btn-outline" onclick="downloadModalQR()" style="flex:1; padding:8px; font-size:11px;">⬇️ Unduh</button>
+                <button class="btn btn-outline" onclick="printModalQR()" style="flex:1; padding:8px; font-size:11px;">🖨️ Cetak</button>
+            </div>
         </div>
     </div>
 

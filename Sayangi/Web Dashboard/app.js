@@ -240,7 +240,7 @@ function handleStateUpdate(state, patient, vitals, thermalGrid, record) {
 async function loadPatients() {
     try {
         const patientsObj = await firebaseGet("patients") || {};
-        const patients = Object.values(patientsObj);
+        const patients = Object.values(patientsObj).filter(Boolean);
         
         const simSelect = document.getElementById('sim-patient-select');
         if (simSelect) {
@@ -264,7 +264,7 @@ async function loadRecords(filterPriority = 'ALL') {
         const patientsObj = await firebaseGet("patients") || {};
         
         let records = [];
-        for (let r of Object.values(recordsObj)) {
+        for (let r of Object.values(recordsObj).filter(Boolean)) {
             const patient = patientsObj[r.patient_id] || {};
             records.push({
                 ...r,
@@ -404,7 +404,12 @@ function renderRecordDetail(record) {
                         </div>
                         <div class="profile-item">
                             <span class="profile-label">Nomor QR</span>
-                            <span class="profile-value">${record.qr_code}</span>
+                            <span class="profile-value" style="display:flex; align-items:center; gap:6px;">
+                                ${record.qr_code}
+                                <button class="btn btn-outline" onclick="showQRModal('${record.qr_code}', '${record.name.replace(/'/g, "\\'")}')" style="padding: 2px 6px; font-size: 10px; line-height: 1; min-height: unset; margin: 0; display: inline-flex; align-items: center; gap: 3px; width: auto; height: auto;">
+                                    🔍 QR
+                                </button>
+                            </span>
                         </div>
                         <div class="profile-item">
                             <span class="profile-label">Umur / Gender</span>
@@ -557,7 +562,7 @@ function renderRecordDetail(record) {
 async function loadPatientHistory(patientId) {
     try {
         const recordsObj = await firebaseGet("records") || {};
-        const records = Object.values(recordsObj).filter(r => r.patient_id === patientId);
+        const records = Object.values(recordsObj).filter(Boolean).filter(r => r.patient_id === patientId);
         
         patientHistory.innerHTML = '';
         
@@ -1147,7 +1152,8 @@ async function triggerSimThermal() {
     
     // Save to Firebase RTDB
     const recordsObj = await firebaseGet("records") || {};
-    const nextId = Object.keys(recordsObj).length > 0 ? Math.max(...Object.keys(recordsObj).map(Number)) + 1 : 1;
+    const validKeys = Object.keys(recordsObj).map(Number).filter(k => !isNaN(k) && k > 0);
+    const nextId = validKeys.length > 0 ? Math.max(...validKeys) + 1 : 1;
     
     const newRecord = {
         id: nextId,
@@ -1241,6 +1247,10 @@ async function pollKioskSession() {
 }
 
 // Register new patient directly to Firebase RTDB
+// Global state for QR code print/download
+let lastRegisteredPatient = null;
+
+// Register new patient directly to Firebase RTDB
 async function handleRegisterPatient(e) {
     e.preventDefault();
     const name = document.getElementById('reg-name').value;
@@ -1253,7 +1263,7 @@ async function handleRegisterPatient(e) {
     
     try {
         const patientsObj = await firebaseGet("patients") || {};
-        const patients = Object.values(patientsObj);
+        const patients = Object.values(patientsObj).filter(Boolean);
         
         for (let p of patients) {
             if (p.qr_code === qr_code) {
@@ -1277,14 +1287,184 @@ async function handleRegisterPatient(e) {
         
         await firebasePut(`patients/${nextId}`, newPatient);
         
-        alert('Pendaftaran warga baru berhasil!');
-        e.target.reset();
-        document.getElementById('reg-qr').value = 'PAS-' + String(Math.floor(100 + Math.random() * 900));
+        // Hide form, show success QR view
+        document.getElementById('register-patient-form').style.display = 'none';
+        const successQrDiv = document.getElementById('register-success-qr');
+        successQrDiv.style.display = 'flex';
+        
+        // Render QR Code
+        const container = document.getElementById('reg-qrcode-container');
+        container.innerHTML = '';
+        new QRCode(container, {
+            text: qr_code,
+            width: 140,
+            height: 140,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        
+        document.getElementById('reg-success-name').textContent = name;
+        document.getElementById('reg-success-id').textContent = qr_code;
+        
+        lastRegisteredPatient = newPatient;
+        
         loadPatients();
     } catch (err) {
         console.error(err);
         alert('Terjadi kesalahan koneksi.');
     }
+}
+
+// Helper functions for registration QR Code download/print
+function downloadRegisteredQR() {
+    if (!lastRegisteredPatient) return;
+    const canvas = document.querySelector('#reg-qrcode-container canvas');
+    if (!canvas) return;
+    const a = document.createElement('a');
+    a.download = `QR_Sayangi_${lastRegisteredPatient.name.replace(/\s+/g, '_')}_${lastRegisteredPatient.qr_code}.png`;
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+}
+
+function printRegisteredQR() {
+    if (!lastRegisteredPatient) return;
+    const canvas = document.querySelector('#reg-qrcode-container canvas');
+    if (!canvas) return;
+    const w = window.open('', '_blank');
+    w.document.write(`
+        <html>
+        <head>
+            <title>Cetak QR Code Pasien - Sayangi</title>
+            <style>
+                body {
+                    text-align: center;
+                    padding: 40px;
+                    font-family: system-ui, -apple-system, sans-serif;
+                    background: #fff;
+                    color: #111827;
+                }
+                .card {
+                    display: inline-block;
+                    border: 2px dashed #0d9488;
+                    border-radius: 16px;
+                    padding: 24px;
+                    max-width: 280px;
+                }
+                h2 { margin: 0 0 4px 0; color: #0d9488; font-size: 20px; }
+                h4 { margin: 0 0 16px 0; color: #6b7280; font-size: 13px; font-weight: normal; }
+                .name { font-size: 18px; font-weight: bold; margin-top: 14px; }
+                .qr-val { font-family: monospace; font-size: 12px; color: #4b5563; margin-top: 4px; }
+                .footer-text { font-size: 10px; color: #9ca3af; margin-top: 16px; }
+            </style>
+        </head>
+        <body onload="window.print()">
+            <div class="card">
+                <h2>SAYANGI</h2>
+                <h4>Kios Kesehatan Mandiri Desa</h4>
+                <img src="${canvas.toDataURL('image/png')}" style="width:160px; height:160px;">
+                <div class="name">${lastRegisteredPatient.name}</div>
+                <div class="qr-val">${lastRegisteredPatient.qr_code}</div>
+                <div class="footer-text">Tempelkan QR Code ini ke kamera Sayangi Station untuk memulai pemeriksaan mandiri.</div>
+            </div>
+        </body>
+        </html>
+    `);
+    w.document.close();
+}
+
+function resetRegistrationForm() {
+    document.getElementById('register-patient-form').style.display = 'flex';
+    document.getElementById('register-success-qr').style.display = 'none';
+    document.getElementById('register-patient-form').reset();
+    
+    // Generate new unique QR Code ID with 5 digits
+    const regQrInput = document.getElementById('reg-qr');
+    if (regQrInput) {
+        regQrInput.value = 'PAS-' + String(Math.floor(10000 + Math.random() * 90000));
+    }
+}
+
+// Modal QR viewer functions
+function showQRModal(qrCode, name) {
+    const container = document.getElementById('modal-qrcode-container');
+    container.innerHTML = '';
+    
+    document.getElementById('modal-qr-name').textContent = name;
+    document.getElementById('modal-qr-id').textContent = qrCode;
+    
+    new QRCode(container, {
+        text: qrCode,
+        width: 140,
+        height: 140,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+    });
+    
+    document.getElementById('qr-viewer-modal').style.display = 'flex';
+}
+
+function closeQRModal() {
+    document.getElementById('qr-viewer-modal').style.display = 'none';
+}
+
+function downloadModalQR() {
+    const canvas = document.querySelector('#modal-qrcode-container canvas');
+    const name = document.getElementById('modal-qr-name').textContent;
+    const qrCode = document.getElementById('modal-qr-id').textContent;
+    if (!canvas) return;
+    const a = document.createElement('a');
+    a.download = `QR_Sayangi_${name.replace(/\s+/g, '_')}_${qrCode}.png`;
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+}
+
+function printModalQR() {
+    const canvas = document.querySelector('#modal-qrcode-container canvas');
+    const name = document.getElementById('modal-qr-name').textContent;
+    const qrCode = document.getElementById('modal-qr-id').textContent;
+    if (!canvas) return;
+    const w = window.open('', '_blank');
+    w.document.write(`
+        <html>
+        <head>
+            <title>Cetak QR Code Pasien - Sayangi</title>
+            <style>
+                body {
+                    text-align: center;
+                    padding: 40px;
+                    font-family: system-ui, -apple-system, sans-serif;
+                    background: #fff;
+                    color: #111827;
+                }
+                .card {
+                    display: inline-block;
+                    border: 2px dashed #0d9488;
+                    border-radius: 16px;
+                    padding: 24px;
+                    max-width: 280px;
+                }
+                h2 { margin: 0 0 4px 0; color: #0d9488; font-size: 20px; }
+                h4 { margin: 0 0 16px 0; color: #6b7280; font-size: 13px; font-weight: normal; }
+                .name { font-size: 18px; font-weight: bold; margin-top: 14px; }
+                .qr-val { font-family: monospace; font-size: 12px; color: #4b5563; margin-top: 4px; }
+                .footer-text { font-size: 10px; color: #9ca3af; margin-top: 16px; }
+            </style>
+        </head>
+        <body onload="window.print()">
+            <div class="card">
+                <h2>SAYANGI</h2>
+                <h4>Kios Kesehatan Mandiri Desa</h4>
+                <img src="${canvas.toDataURL('image/png')}" style="width:160px; height:160px;">
+                <div class="name">${name}</div>
+                <div class="qr-val">${qrCode}</div>
+                <div class="footer-text">Tempelkan QR Code ini ke kamera Sayangi Station untuk memulai pemeriksaan mandiri.</div>
+            </div>
+        </body>
+        </html>
+    `);
+    w.document.close();
 }
 
 // Preset vital chip loader
@@ -1396,7 +1576,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const regQrInput = document.getElementById('reg-qr');
     if (regQrInput) {
-        regQrInput.value = 'PAS-' + String(Math.floor(100 + Math.random() * 900));
+        regQrInput.value = 'PAS-' + String(Math.floor(10000 + Math.random() * 90000));
     }
     
     document.querySelectorAll('[data-feed-filter]').forEach(btn => {
@@ -1423,5 +1603,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Start polling sync
     setInterval(pollKioskSession, 2000);
     
+    // Wire up simulator sliders to live-value display
+    const wireSlider = (id, valId, decimals = 0) => {
+        const slider = document.getElementById(id);
+        const label  = document.getElementById(valId);
+        if (slider && label) {
+            const update = () => label.textContent = parseFloat(slider.value).toFixed(decimals);
+            slider.addEventListener('input', update);
+            update();
+        }
+    };
+    wireSlider('sim-hr',   'sim-hr-val',   0);
+    wireSlider('sim-spo2', 'sim-spo2-val', 0);
+    wireSlider('sim-temp', 'sim-temp-val', 1);
+
     switchTab('split');
 });
