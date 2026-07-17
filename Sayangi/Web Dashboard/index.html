@@ -3,64 +3,464 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SehatDesa Station — Kios Pemeriksaan Kesehatan Mandiri Lansia</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Sayangi Station — Booth Pemeriksaan Kesehatan Mandiri Lansia</title>
+    <link rel="stylesheet" href="style.css?v=1.0.12">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 <body>
+
+<!-- ═══ Full-Screen Landing Page ════════════════════════════════════ -->
+<div id="landing-page" class="landing-page mesh-gradient" style="display:block;">
+
+    <!-- Navbar -->
+    <nav class="landing-navbar">
+        <div class="landing-navbar-brand">
+            <img src="Logo_Sayangi_clean.png?v=2" alt="Logo Sayangi">
+            <span>SehatDesa</span>
+        </div>
+        <ul class="landing-nav-links">
+            <li><a href="#hero">Beranda</a></li>
+            <li><a href="#features">Fitur</a></li>
+            <li><a href="#roles">Mulai</a></li>
+        </ul>
+        <button class="landing-nav-cta" onclick="scrollToRoles()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+            Masuk
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="landing-hero mesh-gradient">
+        <div class="landing-hero-bg-orbs">
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+        </div>
+        <div class="landing-hero-inner" style="max-width:1200px; display:flex; align-items:center; gap:40px; text-align:left; position:relative; z-index:1; padding:40px 0;">
+            <!-- Hero Left: Content -->
+            <div class="hero-left" style="flex:1;">
+                <span class="section-tag-dark" style="margin-bottom:24px;">📍 Garuda Hack 7.0 · Sayangi Station</span>
+                <h1 style="text-align:left; margin-bottom:16px;">Booth Pemeriksaan<br><span class="text-gradient">Kesehatan Mandiri</span></h1>
+                <p style="margin:0 0 32px 0;">Platform telehealth pintar pedesaan terintegrasi dengan Firebase Cloud untuk pemantauan kesehatan berkala warga secara mandiri melalui modalitas termal telapak kaki dan evaluasi visual luka berbasis AI.</p>
+                <div class="landing-hero-btns" style="justify-content:flex-start;">
+                    <button class="btn-hero-primary" onclick="scrollToRoles()">
+                        Masuk Sekarang
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                    </button>
+                    <a class="btn-hero-secondary" href="#features">
+                        Pelajari Fitur
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"/></svg>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Hero Right: Interactive Visual System Mockup -->
+            <div class="hero-right" style="flex:1; display:flex; justify-content:center;">
+                <div class="device-mockup-container float-anim" style="width:100%; max-width:460px; background:rgba(255,255,255,0.08); backdrop-filter:blur(24px); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:20px; box-shadow:0 30px 60px rgba(0,0,0,0.25);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
+                        <span style="font-weight:700; font-size:11px; color:#38bdf8; text-transform:uppercase; letter-spacing:0.1em; display:flex; align-items:center; gap:6px;">
+                            <span class="live-status-dot online"></span> LIVE HARDWARE CONTEXT
+                        </span>
+                        <span style="font-size:10px; color:#94a3b8; font-family:monospace;">ID: precheck-01</span>
+                    </div>
+                    
+                    <!-- Interactive Camera Viewfinder Mockup -->
+                    <div class="mock-viewfinder" style="position:relative; width:100%; height:200px; background:#020617; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center;">
+                        <div class="scanner-laser-line"></div>
+                        <img src="Logo_Sayangi_clean.png?v=2" alt="Live Scanner Frame" style="width:120px; opacity:0.15; pointer-events:none;">
+                        
+                        <div style="position:absolute; bottom:12px; left:12px; background:rgba(15,23,42,0.85); padding:4px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; gap:6px;">
+                            <span class="live-status-dot active"></span>
+                            <span style="font-size:9.5px; font-weight:700; color:#fff; font-family:monospace;">ESP32-CAM STREAM</span>
+                        </div>
+                        
+                        <div style="position:absolute; top:12px; right:12px; background:rgba(239,68,68,0.2); border:1px solid #f43f5e; color:#f43f5e; padding:3px 8px; border-radius:4px; font-size:9px; font-weight:700; letter-spacing:0.5px;">REC</div>
+                    </div>
+                    
+                    <!-- Hardware Vitals Widget Grid -->
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;">
+                        <div class="mock-widget" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px;">
+                            <span style="display:block; font-size:9.5px; font-weight:700; color:#94a3b8; text-transform:uppercase; margin-bottom:4px;">Suhu MLX90614</span>
+                            <div style="display:flex; align-items:baseline; gap:4px;">
+                                <span class="temp-counter" style="font-size:24px; font-weight:800; color:#14b8a6; font-family:'Space Grotesk', sans-serif;">36.6</span>
+                                <span style="font-size:12px; color:#14b8a6; font-weight:700;">°C</span>
+                            </div>
+                            <span style="font-size:9px; color:#64748b;">Dahi Non-kontak</span>
+                        </div>
+                        
+                        <div class="mock-widget" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px;">
+                            <span style="display:block; font-size:9.5px; font-weight:700; color:#94a3b8; text-transform:uppercase; margin-bottom:4px;">Booth Mode</span>
+                            <div style="display:flex; align-items:center; gap:6px; margin:4px 0 2px 0;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg>
+                                <span style="font-size:13px; font-weight:700; color:#fff;">Pemeriksaan</span>
+                            </div>
+                            <span style="font-size:9px; color:#64748b;">Standby Mode</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="landing-stats">
+        <div class="landing-stats-inner">
+            <div class="stat-card">
+                <div class="icon-circle" style="margin:0 auto 16px; width:48px; height:48px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.109A11.386 11.386 0 0110.089 20c-2.202 0-4.25-.622-5.99-1.693v-.078a5.5 5.5 0 0110.986-2.128"/></svg>
+                </div>
+                <div class="stat-num">100+</div>
+                <div class="stat-label">Warga Terdaftar</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon-circle" style="margin:0 auto 16px; width:48px; height:48px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751"/></svg>
+                </div>
+                <div class="stat-num">5+</div>
+                <div class="stat-label">Bidan & Kader</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon-circle" style="margin:0 auto 16px; width:48px; height:48px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div class="stat-num">24/7</div>
+                <div class="stat-label">Booth Mandiri</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon-circle" style="margin:0 auto 16px; width:48px; height:48px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+                </div>
+                <div class="stat-num">AI</div>
+                <div class="stat-label">Gemini Powered</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="landing-features" style="padding: 100px 48px; background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(16px); border-top: 1px solid rgba(255, 255, 255, 0.08); border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+        <div class="landing-features-inner" style="max-width: 1200px; margin: 0 auto; text-align: center;">
+            <span class="section-tag" style="margin-bottom: 16px; display: inline-block;">Teknologi Unggulan</span>
+            <h2 class="section-heading" style="font-size: 38px; margin-bottom: 16px; color: #ffffff; font-weight: 800;">Fitur <span class="text-gradient">Canggih</span> Kami</h2>
+            <p class="section-sub" style="margin-bottom: 50px; font-size: 15px; color: #94a3b8; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.6;">Inovasi kesehatan terintegrasi untuk pencegahan dini luka komplikasi diabetes melitus secara non-invasif.</p>
+            
+            <div class="features-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; text-align: left;">
+                <div class="feature-card" style="background: rgba(255, 255, 255, 0.04); padding: 32px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    <div class="icon-circle" style="width: 48px; height: 48px; background: rgba(14, 165, 233, 0.15); color: #0ea5e9; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-bottom: 18px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 22px; height: 22px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/></svg>
+                    </div>
+                    <h3 style="font-size: 18px; font-weight: 700; color: #ffffff; margin-bottom: 10px;">Thermal Asymmetry</h3>
+                    <p style="font-size: 13.5px; color: #94a3b8; line-height: 1.6; margin: 0;">Mendeteksi deviasi suhu telapak kaki kiri vs kanan secara non-kontak menggunakan sensor MLX90614.</p>
+                </div>
+                <div class="feature-card" style="background: rgba(255, 255, 255, 0.04); padding: 32px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    <div class="icon-circle" style="width: 48px; height: 48px; background: rgba(20, 184, 166, 0.15); color: #14b8a6; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-bottom: 18px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 22px; height: 22px;"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.644C3.654 6.228 8.441 3 12 3c3.559 0 8.346 3.228 9.964 8.678c.08.268.08.543 0 .811C20.346 17.772 15.559 21 12 21c-3.559 0-8.346-3.228-9.964-8.678z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </div>
+                    <h3 style="font-size: 18px; font-weight: 700; color: #ffffff; margin-bottom: 10px;">Computer Vision AI</h3>
+                    <p style="font-size: 13.5px; color: #94a3b8; line-height: 1.6; margin: 0;">Mengklasifikasikan derajat luka secara visual melalui pemrosesan kamera ESP32-CAM + Roboflow AI.</p>
+                </div>
+                <div class="feature-card" style="background: rgba(255, 255, 255, 0.04); padding: 32px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    <div class="icon-circle" style="width: 48px; height: 48px; background: rgba(99, 102, 241, 0.15); color: #6366f1; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-bottom: 18px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 22px; height: 22px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/></svg>
+                    </div>
+                    <h3 style="font-size: 18px; font-weight: 700; color: #ffffff; margin-bottom: 10px;">Gemini AI Integration</h3>
+                    <p style="font-size: 13.5px; color: #94a3b8; line-height: 1.6; margin: 0;">Analisis rekam medis otomatis berbasis cloud Firebase & ringkasan konsultasi asisten medis AI Gemini.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Role Selection Section -->
+    <section id="roles" class="landing-roles">
+        <div class="landing-roles-inner">
+            <span class="section-tag" style="margin-bottom:20px;">Pilih Akses Anda</span>
+            <h2 class="section-heading">Mulai <span class="text-gradient">Sekarang</span></h2>
+            <p class="section-sub">Pilih peran Anda untuk mengakses layanan kesehatan SehatDesa Station.</p>
+            <div class="roles-grid">
+                <!-- Bidan/Kader Card -->
+                <div class="role-card" onclick="enterRole('admin')">
+                    <div class="role-card-img">
+                        <img src="img_bidan.png" alt="Bidan Desa">
+                        <div class="role-label-pill">Kader / Bidan</div>
+                    </div>
+                    <div class="role-card-body">
+                        <h3>Akses Petugas Medis</h3>
+                        <ul class="role-card-features">
+                            <li><span class="check-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Dashboard Kontrol Medis</li>
+                            <li><span class="check-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>AI Symptom Checker</li>
+                            <li><span class="check-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Diagnosis Scanner ESP32-CAM</li>
+                            <li><span class="check-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Verifikasi Warga Baru</li>
+                            <li><span class="check-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Kelola Antrean & Jadwal</li>
+                        </ul>
+                    </div>
+                    <button class="role-card-cta">Masuk Sebagai Bidan →</button>
+                </div>
+                <!-- Warga/Pasien Card -->
+                <div class="role-card" onclick="enterRole('warga')">
+                    <div class="role-card-img">
+                        <img src="img_warga.png" alt="Warga Desa">
+                        <div class="role-label-pill">Warga Mandiri</div>
+                    </div>
+                    <div class="role-card-body">
+                        <h3>Layanan Mandiri Warga</h3>
+                        <ul class="role-card-features">
+                            <li><span class="check-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Daftar Akun & Kartu QR</li>
+                            <li><span class="check-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Cek Riwayat Skrining</li>
+                            <li><span class="check-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Status Persetujuan Bidan</li>
+                            <li><span class="check-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Akses Rekam Medis Mandiri</li>
+                            <li><span class="check-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>Laporan Kesehatan Berkala</li>
+                        </ul>
+                    </div>
+                    <button class="role-card-cta">Masuk Sebagai Warga →</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer-section">
+        © 2026 SehatDesa Station · Sayangi — Garuda Hack 7.0 · Kebijakan Privasi Pasien Kemenkes RI
+    </footer>
+</div>
+
+
 <div class="app-container">
 
     <!-- ═══ Header ═══════════════════════════════════════════════════════ -->
     <header class="app-header">
         <div class="brand">
-            <div class="brand-logo">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 10.5h-5.5V5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v5.5H5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5h5.5V19c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-5.5H19c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z"/>
-                </svg>
+            <div class="brand-logo" style="overflow:hidden; background:none; border:none; width:84px; height:24px; display:flex; align-items:center; justify-content:center; border-radius:0;">
+                <img src="Logo_Sayangi_clean.png?v=1.0.8" alt="Logo Sayangi" style="width:100%; height:100%; object-fit:contain;">
             </div>
             <div class="brand-text">
                 <h1>SehatDesa Station</h1>
-                <span><span class="flag-id"></span> Kios Kesehatan Mandiri · Garuda Hack 7.0</span>
+                <span><span class="flag-id"></span> Booth Kesehatan Mandiri · Garuda Hack 7.0</span>
             </div>
         </div>
 
-        <div class="view-tabs">
-            <button class="tab-btn active" onclick="switchTab('split')">Split View</button>
-            <button class="tab-btn" onclick="switchTab('nakes')">Dashboard Nakes</button>
-            <button class="tab-btn" onclick="switchTab('kiosk')">Kiosk</button>
+        <div class="view-tabs" id="admin-view-tabs">
+            <button class="tab-btn active" id="btn-tab-dashboard" onclick="switchTab('dashboard')">Dashboard</button>
+            <button class="tab-btn" id="btn-tab-symptoms" onclick="switchTab('symptoms')">Symptoms AI</button>
+            <button class="tab-btn" id="btn-tab-diagnosis" onclick="switchTab('diagnosis')">Diagnosis Scanner</button>
+            <button class="tab-btn" id="btn-tab-appointments" onclick="switchTab('appointments')">Appointments</button>
+            <button class="tab-btn" id="btn-tab-patients" onclick="switchTab('patients')">Patients</button>
         </div>
 
-        <div class="header-controls">
-            <input type="password" id="gemini-key-input"
-                   placeholder="Gemini API Key (opsional)"
-                   title="Masukkan Gemini API Key untuk ringkasan medis AI"
-                   style="width:180px; padding:5px 10px; font-size:11px; font-family:inherit;
-                          border:1px solid var(--border); border-radius:6px; outline:none;
-                          background:#fff; color:var(--text-1);">
-            <button class="btn btn-outline" onclick="testSpeech()" style="flex:none; padding:5px 12px; font-size:11px;">
-                🔊 Tes Suara
-            </button>
+        <div class="header-controls" id="admin-header-controls">
             <div class="sys-status" id="conn-status">
                 <span class="status-dot"></span> Cloud Database
             </div>
+            <button class="btn btn-outline" onclick="exitToPortal()" style="flex:none; padding:6px 12px; font-size:11px; height: 30px; margin:0; font-weight:bold; color:var(--red); border-color:var(--red-border); background:var(--surface); display:flex; align-items:center; gap:6px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                </svg>Keluar Portal
+            </button>
+        </div>
+
+        <div class="header-controls" id="warga-header-controls" style="display:none; gap:10px; align-items:center;">
+            <div class="sys-status" id="warga-conn-status">
+                <span class="status-dot"></span> Cloud Database
+            </div>
+            <button class="btn btn-outline" onclick="exitToPortal()" style="flex:none; padding:6px 12px; font-size:11px; height: 30px; margin:0; font-weight:bold; color:var(--red); border-color:var(--red-border); background:var(--surface); display:flex; align-items:center; gap:6px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                </svg>Keluar Portal
+            </button>
         </div>
     </header>
 
-    <!-- ═══ Main Workspace ════════════════════════════════════════════════ -->
-    <main class="main-workspace split-layout">
-
-        <!-- Left: Kiosk Panel -->
-        <div id="split-left-side" class="side-panel">
-            <div class="kiosk-mirror-card" id="kiosk-view-panel">
-                <div class="kiosk-header">
-                    <span class="kiosk-lbl">Tampilan Kios Balai Desa</span>
-                    <span class="kiosk-badge">Online</span>
+    <!-- ═══ Layanan Mandiri Warga Workspace ══════════════════════════════ -->
+    <div id="warga-portal-container" class="dashboard-panel" style="display:none; flex:1; height:calc(100vh - 56px); margin:16px; flex-direction:column; overflow:hidden;">
+        <div class="card-header">
+            <span class="card-title" style="display:flex; align-items:center; gap:8px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px; height:18px; color:var(--teal);">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.109A11.386 11.386 0 0110.089 20c-2.202 0-4.25-.622-5.99-1.693v-.078a5.5 5.5 0 0110.986-2.128m2.625-7.625a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3.375 7.5a2.25 2.25 0 114.5 0 2.25 2.25 0 01-4.5 0z" />
+                </svg>Layanan Mandiri Warga Desa (Sayangi Station)
+            </span>
+        </div>
+        <div class="card-body" style="display:grid; grid-template-columns: 1fr 1.1fr 1.1fr; gap:16px; padding:16px; overflow:hidden; height:100%;">
+            <!-- Left Card: Registration Form & Booth Status -->
+            <div style="display:flex; flex-direction:column; gap:12px; overflow-y:auto;">
+                <!-- Booth Availability Card -->
+                <div class="glass-panel" style="padding:12px 14px; border-radius:12px; border:1px solid var(--border-soft); background:var(--surface); display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="icon-circle" style="width:32px; height:32px; background:rgba(20, 184, 166, 0.1); color:var(--teal); display:flex; align-items:center; justify-content:center; border-radius:50%;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px; height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" /></svg>
+                        </span>
+                        <div>
+                            <div style="font-size:11px; font-weight:700; color:var(--text-1);">Status Booth Balai Desa</div>
+                            <div style="font-size:9.5px; color:var(--text-3);">Mendukung pemindaian suhu & thermal</div>
+                        </div>
+                    </div>
+                    <div id="warga-booth-status" class="live-status-badge" style="display:flex; align-items:center; gap:6px; background:#f0fdf4; border:1px solid #bbf7d0; padding:4px 10px; border-radius:12px; font-size:10px; font-weight:700; color:#16a34a;">
+                        <span class="status-dot green" style="width:6px; height:6px; background:#16a34a; border-radius:50%; display:inline-block;"></span> AKTIF
+                    </div>
                 </div>
 
-                <div class="kiosk-screen" id="kiosk-screen">
+                <div class="glass-panel" style="padding:16px; border-radius:12px; border:1px solid var(--border-soft); display:flex; flex-direction:column; gap:10px; background:var(--surface);">
+                    <h3 style="font-size:12px; color:var(--teal); text-transform:uppercase; margin-bottom:4px; font-weight:700; border-bottom:1px solid var(--border-soft); padding-bottom:6px; display:flex; align-items:center; gap:6px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px; height:16px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>Form Pendaftaran Warga Baru
+                    </h3>
+                    <form id="warga-reg-form" onsubmit="handleWargaRegister(event)" style="display:flex; flex-direction:column; gap:10px;">
+                        <div>
+                            <label class="sim-form-label">Nama Lengkap *</label>
+                            <input class="sim-input" type="text" id="warga-nama" placeholder="Nama sesuai KTP, misal: Mbah Joko" required style="width:100%;">
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1.1fr; gap:10px;">
+                            <div>
+                                <label class="sim-form-label">Umur *</label>
+                                <input class="sim-input" type="number" id="warga-umur" placeholder="Misal: 68" min="30" max="120" required style="width:100%;">
+                            </div>
+                            <div>
+                                <label class="sim-form-label">Jenis Kelamin *</label>
+                                <select class="sim-select" id="warga-jk" required style="width:100%;">
+                                    <option value="">-- Pilih --</option>
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="sim-form-label">Nomor NIK (16 digit) *</label>
+                            <input class="sim-input" type="text" id="warga-nik" placeholder="Masukkan 16 digit NIK" required maxlength="16" style="width:100%;">
+                        </div>
+                        <div>
+                            <label class="sim-form-label">No. HP Keluarga (WhatsApp)</label>
+                            <input class="sim-input" type="tel" id="warga-hp" placeholder="08xxxxxxxxxx" style="width:100%;">
+                        </div>
+                        <div>
+                            <label class="sim-form-label">Alamat Lengkap Dusun / RT</label>
+                            <input class="sim-input" type="text" id="warga-alamat" placeholder="Contoh: RT 03 Dusun Krajan" style="width:100%;">
+                        </div>
+                        <div>
+                            <label class="sim-form-label">Riwayat Penyakit Terakhir</label>
+                            <input class="sim-input" type="text" id="warga-keluhan" placeholder="Misal: Diabetes, Darah tinggi, Asam urat" style="width:100%;">
+                        </div>
+                        <div>
+                            <label class="sim-form-label">Password Akun (untuk Login) *</label>
+                            <input class="sim-input" type="password" id="warga-password" placeholder="Buat password untuk login..." required style="width:100%;">
+                        </div>
+                        <div id="warga-reg-alert" style="display:none; padding:10px 12px; border-radius:8px; font-size:11.5px; font-weight:600; line-height:1.5;"></div>
+                        <button class="btn btn-primary" id="warga-reg-submit-btn" type="submit" style="width:100%; padding:10px; font-size:12px; margin-top:4px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                            </svg><span id="warga-reg-btn-text">Kirim Pendaftaran &amp; Buat QR Code</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Middle Card: Login Warga / Profile & History -->
+            <div style="display:flex; flex-direction:column; gap:14px; overflow-y:auto;">
+                <!-- Citizen Login Card -->
+                <div id="warga-login-card" class="glass-panel" style="padding:16px; border-radius:12px; border:1px solid var(--border-soft); background:var(--surface); display:flex; flex-direction:column; gap:12px;">
+                    <h3 style="font-size:12px; color:var(--teal); text-transform:uppercase; margin-bottom:4px; font-weight:700; border-bottom:1px solid var(--border-soft); padding-bottom:8px; display:flex; align-items:center; gap:6px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px; height:16px; color:var(--teal);">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+                        </svg>Login Warga Desa
+                    </h3>
+                    <p style="font-size:11px; color:var(--text-3); line-height:1.4; margin-bottom:4px;">
+                        Masuk menggunakan NIK 16 digit dan Password Anda untuk memantau data kesehatan dan mengunduh kartu QR.
+                    </p>
+                    <form id="warga-login-form" onsubmit="doWargaPortalLogin(event)" style="display:flex; flex-direction:column; gap:10px;">
+                        <div>
+                            <label class="sim-form-label">Nomor NIK (16 digit) *</label>
+                            <input class="sim-input" id="warga-login-nik" type="text" placeholder="Masukkan NIK..." required maxlength="16" style="width:100%;">
+                        </div>
+                        <div>
+                            <label class="sim-form-label">Password *</label>
+                            <input class="sim-input" id="warga-login-password" type="password" placeholder="Masukkan Password..." required style="width:100%;">
+                        </div>
+                        <div id="warga-login-alert" style="display:none; padding:10px 12px; border-radius:8px; font-size:11.5px; font-weight:600; line-height:1.5;"></div>
+                        <button class="btn btn-primary" id="warga-login-submit-btn" type="submit" style="width:100%; padding:10px; font-size:12px; margin-top:6px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <span id="warga-login-btn-text">Masuk ke Portal</span>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Warga QR / Status Card (dynamically populated) -->
+                <div id="warga-status-card" class="glass-panel" style="display:none; padding:16px; border-radius:12px; border:1px solid var(--teal-border); background:#ffffff; text-align:center; flex-direction:column; gap:12px; align-items:center;">
+                    <div style="width:100%; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-soft); padding-bottom:8px;">
+                        <span style="font-weight:700; font-size:12px; color:var(--text-1);">Profil Warga Desa</span>
+                        <span id="warga-status-badge" class="patient-priority-badge" style="font-size:10px; font-weight:bold; padding:2px 8px; border-radius:12px;">PENDING</span>
+                    </div>
+                    
+                    <div id="warga-qrcode-container" style="background:#ffffff; padding:12px; border-radius:10px; border:1px solid var(--border-soft); display:inline-block;"></div>
+                    
+                    <div>
+                        <div id="warga-card-name" style="font-size:16px; font-weight:700; color:var(--text-1);"></div>
+                        <div id="warga-card-nik" style="font-size:11px; font-family:monospace; color:var(--text-2); margin-top:2px;"></div>
+                    </div>
+                    
+                    <div id="warga-status-alert" style="width:100%; font-size:11px; padding:8px; border-radius:6px; font-weight:600; text-align:center; line-height:1.4;"></div>
+                    
+                    <div style="display:flex; gap:6px; width:100%;">
+                        <button class="btn btn-outline" onclick="downloadWargaQR()" style="flex:1; padding:6px; font-size:11px; min-height:unset; margin:0; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px; height:12px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>Unduh
+                        </button>
+                        <button class="btn btn-outline" onclick="printWargaQR()" style="flex:1; padding:6px; font-size:11px; min-height:unset; margin:0; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px; height:12px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.617 0-1.11-.507-1.07-1.122L6.34 18m11.32 0h-11.32m12.42-6.75V8.25c0-1.242-1.008-2.25-2.25-2.25h-9c-1.242 0-2.25 1.008-2.25 2.25v3m13.5 0a2.25 2.25 0 012.25 2.25v3.75a2.25 2.25 0 01-2.25 2.25H3.75a2.25 2.25 0 01-2.25-2.25V13.5a2.25 2.25 0 012.25-2.25h16.5z" />
+                            </svg>Cetak
+                        </button>
+                        <button class="btn btn-outline" onclick="doWargaPortalLogout()" style="flex:1; padding:6px; font-size:11px; min-height:unset; margin:0; display:flex; align-items:center; justify-content:center; gap:6px; color:var(--red); border-color:var(--red-border);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px; height:12px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>Keluar
+                        </button>
+                    </div>
+                    
+                    <!-- Citizen historical visits list -->
+                    <div style="width:100%; text-align:left; margin-top:10px;">
+                        <h4 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--teal); margin-bottom:8px; border-bottom:1px solid var(--border-soft); padding-bottom:4px; display:flex; align-items:center; gap:6px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.375M9 9h3.375m1.875-3c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v15c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V6zM16.5 9h.008v.008H16.5V9zm0 3h.008v.008H16.5V12zm0 3h.008v.008H16.5V15z" />
+                            </svg>Riwayat Pemeriksaan Terakhir Anda
+                        </h4>
+                        <div id="warga-visits-list" style="display:flex; flex-direction:column; gap:6px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Card: AI Chat Gejala Mandiri -->
+            <div class="glass-panel" style="padding:16px; border-radius:12px; border:1px solid var(--teal-border); background:var(--surface); display:flex; flex-direction:column; gap:10px; overflow:hidden; height:100%;">
+                <h3 style="font-size:12px; color:var(--teal); text-transform:uppercase; margin-bottom:4px; font-weight:700; border-bottom:1px solid var(--border-soft); padding-bottom:6px; display:flex; align-items:center; gap:6px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px; height:16px; color:var(--teal);">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 18.97a5.969 5.969 0 01-.749-2.553C4.218 15.42 4 13.766 4 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                    </svg>Asisten Gejala &amp; Kesehatan AI
+                </h3>
+                <p style="font-size:11px; color:var(--text-3); line-height:1.4; margin-bottom:2px;">
+                    Tanyakan keluhan kesehatan kaki atau dahi Anda di sini sebelum berkunjung ke Booth Balai Desa.
+                </p>
+                <div class="chat-container" id="warga-chat-box" style="flex:1; overflow-y:auto; border:1px solid var(--border-soft); border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:8px; background:#f8fafc; font-size:11.5px;">
+                    <div style="color:var(--text-3); font-style:italic; text-align:center; padding:10px 0;">Silakan mulai mengetik untuk berkonsultasi...</div>
+                </div>
+                <div style="display:flex; gap:6px;">
+                    <input type="text" id="warga-chat-input" class="sim-input" placeholder="Tulis keluhan Anda..." style="flex:1;" onkeydown="if(event.key==='Enter') sendWargaChatMessage()">
+                    <button class="btn btn-primary" onclick="sendWargaChatMessage()" style="width:70px; margin:0; font-size:11px; padding:8px; display:flex; align-items:center; justify-content:center;">Kirim</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Main Workspace ════════════════════════════════════════════════ -->
+    <main class="main-workspace" id="main-admin-workspace">
+
+        <!-- Left: Booth Panel -->
+        <div id="split-left-side" class="side-panel" style="display: none !important;">
+            <div class="booth-mirror-card" id="booth-view-panel">
+                <div class="booth-header">
+                    <span class="booth-lbl">Tampilan Booth Balai Desa</span>
+                    <span class="booth-badge">Online</span>
+                </div>
+
+                <div class="booth-screen" id="booth-screen">
 
                     <!-- STATE: IDLE -->
-                    <div class="kiosk-state-panel active" id="kiosk-idle">
+                    <div class="booth-state-panel active" id="booth-idle">
                         <div class="scanner-frame">
                             <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5"
                                  viewBox="0 0 24 24" style="color:var(--teal);">
@@ -75,9 +475,9 @@
                                          1.125 0 0 1 13.5 9.375v-4.5z"/>
                             </svg>
                         </div>
-                        <h2 class="kiosk-title">Pindai Kartu QR</h2>
-                        <p class="kiosk-instruction">Dekatkan kartu QR ke kamera kios untuk memulai pemeriksaan rutin.</p>
-                        <div class="kiosk-audio-indicator">
+                        <h2 class="booth-title">Pindai Kartu QR</h2>
+                        <p class="booth-instruction">Dekatkan kartu QR ke kamera booth untuk memulai pemeriksaan rutin.</p>
+                        <div class="booth-audio-indicator">
                             <div class="audio-bars">
                                 <div class="audio-bar"></div>
                                 <div class="audio-bar"></div>
@@ -88,31 +488,31 @@
                     </div>
 
                     <!-- STATE: PATIENT_IDENTIFIED -->
-                    <div class="kiosk-state-panel" id="kiosk-patient">
+                    <div class="booth-state-panel" id="booth-patient">
                         <div class="brand-logo" style="width:44px;height:44px;margin-bottom:14px;">
                             <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0
                                          2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                             </svg>
                         </div>
-                        <h2 class="kiosk-title">Selamat Datang!</h2>
-                        <p id="kiosk-pat-name" style="font-size:20px;font-weight:700;color:var(--teal);margin-bottom:2px;">Mbah Sri</p>
-                        <p id="kiosk-pat-age" style="font-size:12px;color:var(--text-2);margin-bottom:2px;">72 tahun</p>
-                        <p id="kiosk-pat-history" style="font-size:11px;color:var(--red);margin-bottom:12px;">Riwayat: Diabetes</p>
-                        <p class="kiosk-instruction" style="border-top:1px solid var(--border-soft);padding-top:10px;">
-                            Harap bersiap. Sensor dahi dan sensor jari akan segera aktif.
+                        <h2 class="booth-title">Selamat Datang!</h2>
+                        <p id="booth-pat-name" style="font-size:20px;font-weight:700;color:var(--teal);margin-bottom:2px;">Mbah Sri</p>
+                        <p id="booth-pat-age" style="font-size:12px;color:var(--text-2);margin-bottom:2px;">72 tahun</p>
+                        <p id="booth-pat-history" style="font-size:11px;color:var(--red);margin-bottom:12px;">Riwayat: Diabetes</p>
+                        <p class="booth-instruction" style="border-top:1px solid var(--border-soft);padding-top:10px;">
+                            Harap bersiap. Sensor dahi dan sensor kaki akan segera aktif.
                         </p>
                     </div>
 
                     <!-- STATE: READING_VITALS -->
-                    <div class="kiosk-state-panel" id="kiosk-vitals">
-                        <div class="kiosk-anim-circle"></div>
-                        <h2 class="kiosk-title">Membaca Vital Sign</h2>
-                        <p class="kiosk-instruction">Tempelkan dahi ke sensor suhu dan masukkan ujung jari ke sensor oximeter.</p>
+                    <div class="booth-state-panel" id="booth-vitals">
+                        <div class="booth-anim-circle"></div>
+                        <h2 class="booth-title">Membaca Suhu Tubuh</h2>
+                        <p class="booth-instruction">Tempelkan dahi ke sensor suhu tubuh di depan Anda.</p>
                     </div>
 
                     <!-- STATE: READING_THERMAL -->
-                    <div class="kiosk-state-panel" id="kiosk-thermal">
+                    <div class="booth-state-panel" id="booth-thermal">
                         <div class="scanner-frame" style="width:80px;height:64px;">
                             <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5"
                                  viewBox="0 0 24 24" style="color:var(--teal);">
@@ -123,24 +523,22 @@
                                          017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582"/>
                             </svg>
                         </div>
-                        <h2 class="kiosk-title">Skrining Termal Kaki</h2>
-                        <p class="kiosk-instruction">Vital sign tercatat! Silakan <strong>lepaskan alas kaki</strong> dan berdiri di atas pijakan thermal.</p>
-                        <div class="kiosk-vitals-display">
-                            <div class="kiosk-vital-bubble"><span>Jantung</span><strong id="kiosk-vit-hr">75</strong></div>
-                            <div class="kiosk-vital-bubble"><span>SpO₂</span><strong id="kiosk-vit-spo2">98</strong></div>
-                            <div class="kiosk-vital-bubble"><span>Suhu</span><strong id="kiosk-vit-temp">36.5</strong></div>
+                        <h2 class="booth-title">Skrining Termal Kaki</h2>
+                        <p class="booth-instruction">Suhu tubuh tercatat! Silakan <strong>lepaskan alas kaki</strong> dan berdiri di atas pijakan thermal.</p>
+                        <div class="booth-vitals-display">
+                            <div class="booth-vital-bubble"><span>Suhu Tubuh</span><strong id="booth-vit-temp">36.5</strong></div>
                         </div>
                     </div>
 
                     <!-- STATE: PROCESSING -->
-                    <div class="kiosk-state-panel" id="kiosk-processing">
-                        <div class="kiosk-anim-circle"></div>
-                        <h2 class="kiosk-title">Menganalisis Data</h2>
-                        <p class="kiosk-instruction">Mohon tunggu. Data klinis sedang diproses dan diteruskan ke bidan desa terdekat.</p>
+                    <div class="booth-state-panel" id="booth-processing">
+                        <div class="booth-anim-circle"></div>
+                        <h2 class="booth-title">Menganalisis Data</h2>
+                        <p class="booth-instruction">Mohon tunggu. Data klinis sedang diproses dan diteruskan ke bidan desa terdekat.</p>
                     </div>
 
                     <!-- STATE: COMPLETED -->
-                    <div class="kiosk-state-panel" id="kiosk-completed">
+                    <div class="booth-state-panel" id="booth-completed">
                         <div style="width:48px;height:48px;border-radius:50%;background:var(--green-light);
                                     border:2px solid var(--green-border);display:flex;align-items:center;
                                     justify-content:center;margin-bottom:14px;">
@@ -148,104 +546,40 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                             </svg>
                         </div>
-                        <h2 class="kiosk-title" style="color:var(--green);">Pemeriksaan Selesai</h2>
-                        <p class="kiosk-instruction" id="kiosk-res-advise" style="margin-bottom:12px;">
+                        <h2 class="booth-title" style="color:var(--green);">Pemeriksaan Selesai</h2>
+                        <p class="booth-instruction" id="booth-res-advise" style="margin-bottom:12px;">
                             Data Anda telah tersimpan dan diteruskan ke bidan desa.
                         </p>
-                        <div class="kiosk-vitals-display" style="margin-bottom:14px;">
-                            <div class="kiosk-vital-bubble"><span>Jantung</span><strong id="kiosk-res-hr">75</strong></div>
-                            <div class="kiosk-vital-bubble"><span>SpO₂</span><strong id="kiosk-res-spo2">98</strong></div>
-                            <div class="kiosk-vital-bubble"><span>Suhu</span><strong id="kiosk-res-temp">36.5</strong></div>
+                        <div class="booth-vitals-display" style="margin-bottom:14px;">
+                            <div class="booth-vital-bubble"><span>Suhu Tubuh</span><strong id="booth-res-temp">36.5</strong></div>
                         </div>
                         <button class="btn btn-primary" onclick="triggerReset()"
                                 style="flex:none;width:auto;padding:7px 20px;font-size:12px;">
-                            Selesai &amp; Reset Kios
+                            Selesai &amp; Reset Booth
                         </button>
                     </div>
 
-                </div><!-- /kiosk-screen -->
+                </div><!-- /booth-screen -->
 
-                <!-- ═══ Simulator Controls ═══════════════════════════════ -->
+                <!-- ═══ Device & API Configurations ══════════════════════ -->
                 <div style="padding: 12px 16px; border-top: 1px solid var(--border); background: var(--bg-secondary);">
                     <p style="font-size: 10px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">
-                        ⚙ Panel Simulasi Demo
+                        ⚙ Pengaturan Perangkat &amp; API
                     </p>
 
-                    <!-- Step 1: Select Patient QR -->
-                    <div style="margin-bottom: 10px;">
-                        <label class="sim-form-label">1. Pilih Pasien (Scan QR)</label>
-                        <div style="display: flex; gap: 6px; align-items: center;">
-                            <select id="sim-patient-select" class="sim-select" style="flex: 1;">
-                                <option value="">-- Pilih Kartu QR Pasien --</option>
-                            </select>
-                            <button class="btn btn-outline" onclick="triggerSimQR()" style="flex:none; padding: 5px 10px; font-size: 11px; white-space: nowrap;">
-                                Scan QR
-                            </button>
+                    <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 8px; background: rgba(14,165,233,0.03); padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-soft);">
+                        <div>
+                            <label class="sim-form-label" style="font-size: 9px; margin-bottom: 4px; display: block; font-weight: 700; color: var(--text-2);">IP Kamera (ESP32-CAM)</label>
+                            <input type="text" id="cam-ip-input" placeholder="e.g. 192.168.1.100" style="width: 100%; font-size: 11px; padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-1);">
+                        </div>
+                        <div>
+                            <label class="sim-form-label" style="font-size: 9px; margin-bottom: 4px; display: block; font-weight: 700; color: var(--text-2);">Roboflow Key</label>
+                            <input type="password" id="roboflow-key-input" placeholder="API Key" style="width: 100%; font-size: 11px; padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-1);">
                         </div>
                     </div>
+                </div><!-- /device configurations -->
 
-                    <!-- Step 2: Vitals -->
-                    <div style="margin-bottom: 10px;">
-                        <label class="sim-form-label">2. Vital Sign</label>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 6px;">
-                            <div>
-                                <label class="sim-form-label" style="font-size: 9px;">HR (bpm)</label>
-                                <div style="display:flex; align-items:center; gap:4px;">
-                                    <input type="range" id="sim-hr" min="40" max="140" value="78" step="1" style="flex:1; accent-color:var(--primary);">
-                                    <span id="sim-hr-val" style="font-size:10px; font-weight:600; color:var(--text-primary); min-width:26px;">78</span>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="sim-form-label" style="font-size: 9px;">SpO₂ (%)</label>
-                                <div style="display:flex; align-items:center; gap:4px;">
-                                    <input type="range" id="sim-spo2" min="80" max="100" value="97" step="1" style="flex:1; accent-color:var(--primary);">
-                                    <span id="sim-spo2-val" style="font-size:10px; font-weight:600; color:var(--text-primary); min-width:26px;">97</span>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="sim-form-label" style="font-size: 9px;">Suhu (°C)</label>
-                                <div style="display:flex; align-items:center; gap:4px;">
-                                    <input type="range" id="sim-temp" min="35.0" max="40.0" value="36.6" step="0.1" style="flex:1; accent-color:var(--primary);">
-                                    <span id="sim-temp-val" style="font-size:10px; font-weight:600; color:var(--text-primary); min-width:28px;">36.6</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display:flex; gap:4px; margin-bottom:6px;">
-                            <button class="preset-chip" data-vpreset onclick="loadVitalsPreset('normal')" style="flex:1; font-size:9px; padding:3px 6px;">Normal</button>
-                            <button class="preset-chip" data-vpreset onclick="loadVitalsPreset('fever')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--amber);">Demam</button>
-                            <button class="preset-chip" data-vpreset onclick="loadVitalsPreset('hypoxia')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--red);">Hipoksia</button>
-                        </div>
-                        <button class="btn btn-outline" onclick="triggerSimVitals()" style="width:100%; padding:5px; font-size:11px;">
-                            Rekam Vital Sign →
-                        </button>
-                    </div>
-
-                    <!-- Step 3: Thermal -->
-                    <div style="margin-bottom: 10px;">
-                        <label class="sim-form-label">3. Thermal Kaki</label>
-                        <div style="display:flex; gap:4px; margin-bottom:6px;">
-                            <button class="preset-chip active" data-case="normal" onclick="document.querySelectorAll('[data-case]').forEach(b=>b.classList.remove('active')); this.classList.add('active')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--green);">Normal</button>
-                            <button class="preset-chip" data-case="inflammatory" onclick="document.querySelectorAll('[data-case]').forEach(b=>b.classList.remove('active')); this.classList.add('active')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--red);">Inflamasi</button>
-                            <button class="preset-chip" data-case="ischemic" onclick="document.querySelectorAll('[data-case]').forEach(b=>b.classList.remove('active')); this.classList.add('active')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--amber);">Iskemia</button>
-                            <button class="preset-chip" data-case="neuropathic" onclick="document.querySelectorAll('[data-case]').forEach(b=>b.classList.remove('active')); this.classList.add('active')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--primary);">Neuropati</button>
-                        </div>
-                        <button class="btn btn-primary" onclick="triggerSimThermal()" style="width:100%; padding:5px; font-size:11px;">
-                            Proses &amp; Simpan →
-                        </button>
-                    </div>
-
-                    <!-- Auto Demo + Reset -->
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn btn-outline" onclick="runDemoWorkflow()" style="flex:1; padding:5px; font-size:10px;">
-                            ⚡ Auto Demo
-                        </button>
-                        <button class="btn btn-outline" onclick="triggerReset()" style="flex:none; padding:5px 10px; font-size:10px; color:var(--red); border-color:var(--red-border);">
-                            Reset
-                        </button>
-                    </div>
-                </div><!-- /simulator controls -->
-
-            </div><!-- /kiosk-mirror-card -->
+            </div><!-- /booth-mirror-card -->
         </div><!-- /side-panel -->
 
         <!-- Right: Medical Dashboard -->
@@ -258,7 +592,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                               d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6zM13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z"/>
                     </svg>
-                    Dashboard Tenaga Medis
+                    Feed Hasil Skrining Warga
                 </span>
                 <!-- Filter chips -->
                 <div style="display:flex;gap:6px;">
@@ -296,13 +630,26 @@
 
                     <!-- Visit history strip -->
                     <div class="history-panel">
-                        <h4 class="section-label" style="margin-bottom:8px;">
-                            Riwayat Kunjungan Sebelumnya
-                        </h4>
-                        <div id="patient-history" style="display:flex;flex-direction:column;gap:4px;">
-                            <div style="font-size:11px;color:var(--text-3);text-align:center;">
-                                Pilih pasien untuk memuat tren longitudinal.
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <h4 class="section-label" style="margin:0;">
+                                Riwayat &amp; Grafik Tren
+                            </h4>
+                            <div style="display:flex; gap:4px;">
+                                <button class="preset-chip active" id="btn-history-list" onclick="toggleHistoryView('list')" style="font-size:9px; padding:2px 6px;">Daftar</button>
+                                <button class="preset-chip" id="btn-history-chart" onclick="toggleHistoryView('chart')" style="font-size:9px; padding:2px 6px;">Grafik Tren</button>
                             </div>
+                        </div>
+                        <!-- List View -->
+                        <div id="patient-history-list" style="display:flex;flex-direction:column;gap:4px;">
+                            <div id="patient-history" style="display:flex;flex-direction:column;gap:4px;">
+                                <div style="font-size:11px;color:var(--text-3);text-align:center;">
+                                    Pilih pasien untuk memuat tren longitudinal.
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Chart View -->
+                        <div id="patient-history-chart" style="display:none; height:180px; width:100%; position:relative;">
+                            <canvas id="health-trend-chart" style="max-height:170px;"></canvas>
                         </div>
                     </div>
                 </div>
@@ -310,32 +657,291 @@
             </div><!-- /card-body -->
         </div><!-- /dashboard-panel -->
 
+        <!-- ═══ Symptoms AI Panel ════════════════════════════════════════ -->
+        <div class="dashboard-panel" id="symptoms-ai-panel" style="display:none; flex:1; flex-direction:column; overflow:hidden; border-color: var(--teal-border);">
+            <div class="card-header">
+                <span class="card-title" style="display:flex; align-items:center; gap:8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px; height:16px; color:var(--teal);">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 18.97a5.969 5.969 0 01-.749-2.553C4.218 15.42 4 13.766 4 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                    </svg>AI Symptoms Tracker &amp; Consultation Assistant
+                </span>
+                <div style="font-size:10px; color:var(--text-3); display:flex; align-items:center; gap:4px;">
+                    <span class="status-dot green"></span> Gemini AI Engine Active
+                </div>
+            </div>
+            <div class="card-body" style="display:flex; flex-direction:column; padding:16px; height:calc(100% - 48px); overflow:hidden; gap:12px; background:var(--surface);">
+                <div class="chat-container" id="symptoms-chat-box" style="flex:1; overflow-y:auto; border:1px solid var(--border-soft); border-radius:10px; padding:16px; display:flex; flex-direction:column; gap:12px; background:#f8fafc;">
+                    <!-- Welcome chat message -->
+                    <div class="chat-msg system" style="display:flex; gap:10px; align-items:start;">
+                        <div style="background:var(--teal-light); color:var(--teal); padding:8px; border-radius:50%; flex-shrink:0;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px; height:16px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a3 3 0 00-3-3H9m3 3h3a3 3 0 003-3h.008M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div style="background:#ffffff; border:1px solid var(--border-soft); padding:10px 14px; border-radius:12px; border-top-left-radius:0; font-size:11.5px; line-height:1.45; color:var(--text-1); max-width:80%;">
+                            Selamat datang di <strong>Pusat Analisis Gejala Kesehatan &amp; Rujukan AI</strong>. Silakan ketikkan keluhan medis pasien (misal: "Pasien mengeluh kebas pada jari kaki kanan, memiliki riwayat diabetes melitus selama 5 tahun") untuk mendapatkan panduan medis awal dan saran dokter spesialis rujukan.
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="symptoms-chat-input" class="sim-input" placeholder="Tuliskan keluhan atau gejala di sini..." style="flex:1;" onkeydown="if(event.key==='Enter') sendSymptomsChatMessage()">
+                    <button class="btn btn-primary" onclick="sendSymptomsChatMessage()" style="width:90px; margin:0; font-size:11px; display:flex; align-items:center; justify-content:center; gap:4px;">
+                        Kirim
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ Precheck View Panel ════════════════════════════════════════ -->
+        <div class="dashboard-panel" id="precheck-view-panel" style="display:none; flex:1; height:100%; flex-direction:column; overflow:hidden;">
+            <div class="card-header">
+                <span class="card-title">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--teal); vertical-align:middle; margin-right:4px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Registrasi Pemeriksaan &amp; Antrean Warga (Pre-Check)
+                </span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="sys-status" style="font-size:10px; padding:2px 8px; height:auto; border-radius:12px;">
+                        <span class="status-dot" id="precheck-db-dot"></span> <span id="precheck-db-text">Menghubungkan...</span>
+                    </div>
+                    <button class="btn btn-outline" onclick="loadPesertaList()" style="padding:4px 10px; font-size:11px; height:unset; width:unset; margin:0;">
+                        🔄 Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card-body" style="display:grid; grid-template-columns:350px 1fr; gap:16px; height:calc(100% - 48px); overflow:hidden; padding:16px;">
+                <!-- Left: Form & QR Code Card -->
+                <div style="display:flex; flex-direction:column; gap:14px; overflow-y:auto; padding-right:4px;">
+                    <div class="glass-panel" style="padding:16px; border-radius:12px; border:1px solid var(--border-soft);">
+                        <h3 style="font-size:12px; color:var(--teal); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:6px; font-weight:700;">
+                            📝 Form Registrasi Peserta
+                        </h3>
+                        <form id="precheck-reg-form" onsubmit="handlePrecheckRegister(event)" style="display:flex; flex-direction:column; gap:10px;">
+                            <div>
+                                <label class="sim-form-label">Nama Lengkap *</label>
+                                <input class="sim-input" type="text" id="pre-nama" placeholder="Contoh: Budi Santoso" required style="width:100%;">
+                            </div>
+                            <div>
+                                <label class="sim-form-label">NIK / Nomor Identitas *</label>
+                                <input class="sim-input" type="text" id="pre-nik" placeholder="16 digit NIK" maxlength="16" required style="width:100%;">
+                            </div>
+                            <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:10px;">
+                                <div>
+                                    <label class="sim-form-label">Tanggal Lahir *</label>
+                                    <input class="sim-input" type="date" id="pre-tgl-lahir" required style="width:100%;">
+                                </div>
+                                <div>
+                                    <label class="sim-form-label">Jenis Kelamin *</label>
+                                    <select class="sim-select" id="pre-jk" required style="width:100%;">
+                                        <option value="">-- Pilih --</option>
+                                        <option value="Laki-laki">Laki-laki</option>
+                                        <option value="Perempuan">Perempuan</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="sim-form-label">No. HP / WhatsApp</label>
+                                <input class="sim-input" type="tel" id="pre-hp" placeholder="08xxxxxxxxxx" style="width:100%;">
+                            </div>
+                            <div>
+                                <label class="sim-form-label">Alamat Tinggal</label>
+                                <input class="sim-input" type="text" id="pre-alamat" placeholder="Nama Dusun, RT/RW" style="width:100%;">
+                            </div>
+                            <div>
+                                <label class="sim-form-label">Keluhan / Tujuan Kunjungan</label>
+                                <input class="sim-input" type="text" id="pre-keluhan" placeholder="Contoh: Asam urat kambuh" style="width:100%;">
+                            </div>
+                            <div style="display:flex; gap:8px; margin-top:4px;">
+                                <button class="btn btn-primary" type="submit" id="pre-submit-btn" style="flex:2; font-size:12px; min-height:unset; padding:8px 12px;">
+                                    <span id="pre-submit-text">✨ Daftarkan &amp; Buat QR</span>
+                                </button>
+                                <button class="btn btn-outline" type="button" onclick="resetPrecheckForm()" style="flex:1; font-size:12px; min-height:unset; padding:8px 12px;">
+                                    Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- QR Result card (hidden initially) -->
+                    <div class="glass-panel" id="precheck-qr-card" style="display:none; padding:16px; text-align:center; flex-direction:column; gap:12px; align-items:center; background:#fafbfc; border-radius:12px; border:1px solid var(--teal-border);">
+                        <h3 style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--green); letter-spacing:0.5px; margin:0;">
+                            🎯 Kartu QR Warga Berhasil Dibuat
+                        </h3>
+                        
+                        <div id="precheck-qrcode-container" style="background:#ffffff; padding:12px; border-radius:10px; border:1px solid var(--border-soft); display:inline-block; box-shadow:0 2px 8px rgba(0,0,0,0.05);"></div>
+                        
+                        <div>
+                            <div id="precheck-qr-name" style="font-size:15px; font-weight:700; color:var(--text-1);"></div>
+                            <div id="precheck-qr-id" style="font-size:11px; font-family:monospace; color:var(--text-2); margin-top:2px;"></div>
+                        </div>
+                        
+                        <div style="display:flex; gap:6px; width:100%;">
+                            <button class="btn btn-outline" onclick="downloadPrecheckQR()" style="flex:1; padding:6px; font-size:11px; min-height:unset; margin:0;">⬇️ Unduh</button>
+                            <button class="btn btn-outline" onclick="printPrecheckQR()" style="flex:1; padding:6px; font-size:11px; min-height:unset; margin:0;">🖨️ Cetak</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right: Real-time Queue Table & Search Verification -->
+                <div style="display:flex; flex-direction:column; gap:14px; overflow:hidden; height:100%;">
+                    <!-- Search / Verification Box -->
+                    <div class="glass-panel" style="padding:14px; border-radius:12px; border:1px solid var(--border-soft);">
+                        <h3 style="font-size:12px; color:var(--teal); text-transform:uppercase; margin-bottom:10px; font-weight:700;">
+                            🔍 Verifikasi &amp; Cari Peserta by ID
+                        </h3>
+                        <div style="display:flex; gap:8px;">
+                            <input class="sim-input" id="pre-cari-id" type="text" placeholder="Masukkan Firebase ID atau SAYANGI:..." onkeydown="if(event.key==='Enter')handlePrecheckSearch()" style="flex:1;">
+                            <button class="btn btn-primary" onclick="handlePrecheckSearch()" style="width:100px; flex:none; min-height:unset; padding:8px 12px; font-size:12px; margin:0;">Cari</button>
+                        </div>
+                        
+                        <!-- Search Result Detail Card (hidden by default) -->
+                        <div id="pre-search-result" class="glass-panel" style="display:none; margin-top:10px; padding:12px; background:#f8fafc; border-color:var(--teal-border); border-radius:8px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-soft); padding-bottom:6px; margin-bottom:8px;">
+                                <span style="font-weight:700; font-size:12px; color:var(--teal);">Profil Terverifikasi</span>
+                                <button onclick="document.getElementById('pre-search-result').style.display='none'" style="background:none; border:none; font-size:16px; color:var(--text-3); cursor:pointer; line-height:1;">×</button>
+                            </div>
+                            <div style="display:flex; gap:12px; align-items:start;">
+                                <div id="pre-search-qrcode" style="background:#fff; padding:6px; border-radius:6px; border:1px solid var(--border-soft); flex-shrink:0;"></div>
+                                <div style="flex:1; font-size:11px;">
+                                    <div id="pre-search-name" style="font-size:14px; font-weight:700; color:var(--text-1); margin-bottom:4px;"></div>
+                                    <div style="display:grid; grid-template-columns:80px 1fr; gap:2px; color:var(--text-2);">
+                                        <strong>NIK:</strong> <span id="pre-search-nik"></span>
+                                        <strong>Tgl Lahir:</strong> <span id="pre-search-dob"></span>
+                                        <strong>Gender:</strong> <span id="pre-search-gender"></span>
+                                        <strong>Keluhan:</strong> <span id="pre-search-complaint" style="color:var(--red);"></span>
+                                        <strong>ID Firebase:</strong> <span id="pre-search-fbid" style="font-family:monospace; font-weight:bold; color:var(--teal);"></span>
+                                        <strong>Total Scan:</strong> <span id="pre-search-scancount" class="patient-priority-badge NORMAL" style="display:inline-block; font-size:9px; padding:1px 6px; width:fit-content; border-radius:10px; font-weight:bold;"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Table Queue -->
+                    <div class="glass-panel" style="flex:1; display:flex; flex-direction:column; overflow:hidden; padding:14px; border-radius:12px; border:1px solid var(--border-soft);">
+                        <h3 style="font-size:12px; color:var(--teal); text-transform:uppercase; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; font-weight:700;">
+                            <span>👥 Antrean Peserta Terdaftar</span>
+                            <span style="font-size:10px; color:var(--text-3); font-weight:normal;" id="pre-queue-count">Total: 0</span>
+                        </h3>
+                        
+                        <div id="pre-loading-indicator" style="text-align:center; padding:30px; color:var(--text-3);">
+                            <div class="booth-anim-circle" style="width:24px; height:24px; margin:0 auto 10px;"></div>
+                            <span>Memuat data antrean...</span>
+                        </div>
+                        
+                        <div id="pre-empty-indicator" style="display:none; text-align:center; padding:30px; color:var(--text-3); font-size:12px;">
+                            Belum ada peserta terdaftar untuk hari ini.
+                        </div>
+                        
+                        <div id="pre-table-container" style="display:none; flex:1; overflow-y:auto;">
+                            <table style="width:100%; border-collapse:collapse; font-size:11px;">
+                                <thead>
+                                    <tr style="border-bottom:1.5px solid var(--border-soft); text-align:left; color:var(--text-3); font-weight:600;">
+                                        <th style="padding:6px 4px;">#</th>
+                                        <th style="padding:6px 4px;">Nama</th>
+                                        <th style="padding:6px 4px;">NIK</th>
+                                        <th style="padding:6px 4px;">Umur / JK</th>
+                                        <th style="padding:6px 4px;">HP / Alamat</th>
+                                        <th style="padding:6px 4px; max-width: 120px;">Keluhan</th>
+                                        <th style="padding:6px 4px;">Scan</th>
+                                        <th style="padding:6px 4px; text-align:center;">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pre-queue-tbody">
+                                    <!-- Rows go here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ Database Warga Panel (New Module) ══════════════════════════ -->
+        <div class="dashboard-panel" id="patients-view-panel" style="display: none; flex: 1; height: 100%; flex-direction: column; overflow: hidden;">
+            <div class="card-header">
+                <span class="card-title">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--teal); vertical-align:middle; margin-right:4px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                    </svg>
+                    Database Warga Terdaftar (Sayangi Station)
+                </span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span id="patients-count" style="font-size:11px; font-weight:600; color:var(--text-2);">Total Warga: 0</span>
+                    <button class="btn btn-primary" onclick="openRegistrationModal()" style="padding:4px 10px; font-size:11px; height:unset; width:unset; margin:0;">
+                        ➕ Daftarkan Warga Baru
+                    </button>
+                    <button class="btn btn-outline" onclick="loadPatientsListTable()" style="padding:4px 10px; font-size:11px; height:unset; width:unset; margin:0;">
+                        🔄 Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card-body" style="padding:16px; display:flex; flex-direction:column; gap:12px; height:100%; overflow:hidden;">
+                <!-- Search bar -->
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="patients-search-input" class="sim-input" placeholder="Cari nama warga atau nomor QR..." oninput="filterPatientsTable()" style="flex:1;">
+                </div>
+                
+                <!-- Loading / Empty states -->
+                <div id="patients-loading-indicator" style="text-align:center; padding:30px; display:none;">
+                    <span class="status-dot processing"></span> Memuat data warga dari cloud...
+                </div>
+                <div id="patients-empty-indicator" style="text-align:center; padding:30px; display:none; color:var(--text-3);">
+                    Belum ada data warga terdaftar. Silakan klik "+ Daftarkan Warga Baru".
+                </div>
+                
+                <!-- Table container -->
+                <div id="patients-table-container" style="display:none; flex:1; overflow-y:auto;">
+                    <table style="width:100%; border-collapse:collapse; font-size:11px;">
+                        <thead>
+                            <tr style="border-bottom:1.5px solid var(--border-soft); text-align:left; color:var(--text-3); font-weight:600;">
+                                <th style="padding:8px; width:40px;">#</th>
+                                <th style="padding:8px;">Nama Lengkap</th>
+                                <th style="padding:8px; width:100px;">Umur / JK</th>
+                                <th style="padding:8px; width:120px;">Nomor QR</th>
+                                <th style="padding:8px; width:110px;">Status</th>
+                                <th style="padding:8px; width:110px;">No. Telepon</th>
+                                <th style="padding:8px; width:130px;">Alamat Dusun</th>
+                                <th style="padding:8px;">Riwayat Penyakit</th>
+                                <th style="padding:8px; text-align:center; width:220px;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patients-list-tbody">
+                            <!-- Rows go here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </main>
 
-    <!-- ═══ Registration Drawer ═══════════════════════════════════════════ -->
-    <div id="registration-drawer" class="glass-panel"
-         style="display:none;position:fixed;bottom:76px;right:20px;width:320px;z-index:100;
-                max-height:80vh;overflow-y:auto;">
-        <div class="card-header">
-            <span class="card-title">Daftarkan Warga Baru</span>
-            <button onclick="document.getElementById('registration-drawer').style.display='none'"
-                    style="background:none;border:none;font-size:16px;color:var(--text-3);cursor:pointer;
-                           line-height:1;padding:0 2px;">×</button>
-        </div>
-        <div style="padding:14px;">
-            <form id="register-patient-form" style="display:flex;flex-direction:column;gap:10px;">
+    <!-- ═══ Patient Registration Modal ════════════════════════════════════ -->
+    <div id="patients-reg-modal" class="modal-overlay" style="display:none;">
+        <div class="glass-panel" style="width:360px; max-height:90vh; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:16px; border-color:var(--border); background:var(--surface); color:var(--text-1); margin:auto; position:relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:8px;">
+                <span style="font-weight:600; font-size:11px; color:var(--text-2); text-transform:uppercase; letter-spacing:0.5px;">Daftarkan Warga Baru</span>
+                <button onclick="closeRegistrationModal()" style="background:none; border:none; font-size:18px; color:var(--text-3); cursor:pointer; line-height:1;">×</button>
+            </div>
+            
+            <form id="register-patient-form-modal" onsubmit="handleModalRegisterSubmit(event)" style="display:flex; flex-direction:column; gap:10px;">
                 <div>
-                    <label class="sim-form-label">Nama Lengkap</label>
-                    <input class="sim-input" type="text" id="reg-name" required placeholder="Contoh: Mbah Maimunah">
+                    <label class="sim-form-label">Nama Lengkap *</label>
+                    <input class="sim-input" type="text" id="reg-name" required placeholder="Contoh: Mbah Maimunah" style="width: 100%;">
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                     <div>
-                        <label class="sim-form-label">Umur</label>
-                        <input class="sim-input" type="number" id="reg-age" required min="50" max="110" placeholder="70">
+                        <label class="sim-form-label">Umur *</label>
+                        <input class="sim-input" type="number" id="reg-age" required min="30" max="110" placeholder="70" style="width: 100%;">
                     </div>
                     <div>
-                        <label class="sim-form-label">Gender</label>
-                        <select class="sim-select" id="reg-gender" required>
+                        <label class="sim-form-label">Gender *</label>
+                        <select class="sim-select" id="reg-gender" required style="width: 100%;">
                             <option value="Laki-laki">Laki-laki</option>
                             <option value="Perempuan">Perempuan</option>
                         </select>
@@ -343,21 +949,21 @@
                 </div>
                 <div>
                     <label class="sim-form-label">Kode QR (otomatis)</label>
-                    <input class="sim-input" type="text" id="reg-qr" readonly style="color:var(--text-3);">
+                    <input class="sim-input" type="text" id="reg-qr" readonly style="color:var(--text-3); width: 100%;">
                 </div>
                 <div>
                     <label class="sim-form-label">Nomor Telepon Keluarga</label>
-                    <input class="sim-input" type="text" id="reg-phone" placeholder="081xxxxxxxx">
+                    <input class="sim-input" type="text" id="reg-phone" placeholder="081xxxxxxxx" style="width: 100%;">
                 </div>
                 <div>
                     <label class="sim-form-label">Alamat Dusun / RT</label>
-                    <input class="sim-input" type="text" id="reg-address" placeholder="RT 02/RW 03, Dusun Kidul">
+                    <input class="sim-input" type="text" id="reg-address" placeholder="RT 02/RW 03, Dusun Kidul" style="width: 100%;">
                 </div>
                 <div>
                     <label class="sim-form-label">Riwayat Penyakit</label>
-                    <input class="sim-input" type="text" id="reg-history" placeholder="Hipertensi / Asam Urat / Stroke">
+                    <input class="sim-input" type="text" id="reg-history" placeholder="Hipertensi / Asam Urat / Stroke" style="width: 100%;">
                 </div>
-                <button class="btn btn-primary" type="submit" style="margin-top:4px;">Simpan Data Warga</button>
+                <button class="btn btn-primary" type="submit" style="margin-top:4px; width: 100%;">Simpan Data Warga</button>
             </form>
 
             <!-- QR Code Success View -->
@@ -377,10 +983,10 @@
                 </div>
 
                 <div style="display:flex; gap:6px; width:100%; margin-top:8px;">
-                    <button class="btn btn-outline" onclick="downloadRegisteredQR()" style="flex:1; padding:7px; font-size:11px;">
+                    <button class="btn btn-outline" onclick="downloadRegisteredQR()" style="flex:1; padding:7px; font-size:11px; margin: 0;">
                         ⬇️ Unduh QR
                     </button>
-                    <button class="btn btn-outline" onclick="printRegisteredQR()" style="flex:1; padding:7px; font-size:11px;">
+                    <button class="btn btn-outline" onclick="printRegisteredQR()" style="flex:1; padding:7px; font-size:11px; margin: 0;">
                         🖨️ Cetak
                     </button>
                 </div>
@@ -394,13 +1000,13 @@
 
     <!-- ═══ QR Code Viewer Modal ══════════════════════════════════════════ -->
     <div id="qr-viewer-modal" class="modal-overlay" style="display:none;">
-        <div class="glass-panel" style="width:300px; padding:20px; text-align:center; display:flex; flex-direction:column; gap:16px; border-color:var(--border); background:var(--surface); color:var(--text-1);">
+        <div class="glass-panel" style="width:300px; padding:20px; text-align:center; display:flex; flex-direction:column; gap:16px; border-color:var(--border); background:var(--surface); color:var(--text-1); margin:auto; position:relative; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:8px;">
                 <span style="font-weight:600; font-size:11px; color:var(--text-2); text-transform:uppercase; letter-spacing:0.5px;">Kartu QR Warga</span>
                 <button onclick="closeQRModal()" style="background:none; border:none; font-size:18px; color:var(--text-3); cursor:pointer; line-height:1;">×</button>
             </div>
             
-            <div id="modal-qrcode-container" style="background:#ffffff; padding:16px; border-radius:12px; border:1px solid var(--border); display:inline-block; margin:0 auto; box-shadow:0 4px 12px rgba(0,0,0,0.05);"></div >
+            <div id="modal-qrcode-container" style="background:#ffffff; padding:16px; border-radius:12px; border:1px solid var(--border); display:inline-block; margin:0 auto; box-shadow:0 4px 12px rgba(0,0,0,0.05);"></div>
             
             <div>
                 <div id="modal-qr-name" style="font-size:16px; font-weight:700; color:var(--text-1);"></div>
@@ -408,23 +1014,327 @@
             </div>
             
             <div style="display:flex; gap:8px; width:100%;">
-                <button class="btn btn-outline" onclick="downloadModalQR()" style="flex:1; padding:8px; font-size:11px;">⬇️ Unduh</button>
-                <button class="btn btn-outline" onclick="printModalQR()" style="flex:1; padding:8px; font-size:11px;">🖨️ Cetak</button>
+                <button class="btn btn-outline" onclick="downloadModalQR()" style="flex:1; padding:8px; font-size:11px; margin: 0;">⬇️ Unduh</button>
+                <button class="btn btn-outline" onclick="printModalQR()" style="flex:1; padding:8px; font-size:11px; margin: 0;">🖨️ Cetak</button>
             </div>
         </div>
     </div>
 
-    <!-- FAB: Toggle registration drawer -->
-    <button class="btn btn-primary"
-            onclick="const dr=document.getElementById('registration-drawer');dr.style.display=dr.style.display==='none'?'block':'none';"
-            style="position:fixed;bottom:20px;right:20px;width:auto;flex:none;padding:9px 18px;
-                   border-radius:50px;font-size:12px;z-index:99;
-                   box-shadow:0 2px 8px rgba(13,148,136,0.25);">
-        + Warga Baru
-    </button>
+    <!-- ═══ Modal Rujukan Kemenkes (Print Ready) ══════════════════════════ -->
+    <div id="referral-modal" class="modal-overlay" style="display:none;">
+        <div class="glass-panel printable-area" style="width:680px; max-height:95vh; overflow-y:auto; padding:30px; display:flex; flex-direction:column; gap:16px; border-color:var(--border); background:#ffffff; color:#111827; margin:auto; position:relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+            <div class="no-print" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-soft); padding-bottom:8px; margin-bottom:10px;">
+                <span style="font-weight:700; font-size:11px; color:var(--teal); text-transform:uppercase; letter-spacing:0.5px;">Surat Rujukan Digital Sayangi</span>
+                <div style="display:flex; gap:6px;">
+                    <button class="btn btn-primary" onclick="window.print()" style="padding:4px 12px; font-size:11px; margin:0; height:28px;">🖨️ Cetak Surat</button>
+                    <button class="btn btn-outline" onclick="closeReferralModal()" style="padding:4px 12px; font-size:11px; margin:0; height:28px;">Tutup</button>
+                </div>
+            </div>
+            
+            <div id="referral-letter-content">
+                <div style="text-align:center; border-bottom:3px double #111827; padding-bottom:10px; margin-bottom:16px; display:flex; align-items:center; gap:14px; justify-content:center;">
+                    <div style="width:50px; height:50px; flex-shrink:0; border:1px solid #111827; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:8px; line-height:1.2; text-transform:uppercase;">Logo<br>Pemkab</div>
+                    <div style="flex:1; text-align:center;">
+                        <h3 style="margin:0; font-size:13px; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">PEMERINTAH KABUPATEN GARUDA</h3>
+                        <h2 style="margin:2px 0 0 0; font-size:15px; font-weight:800; text-transform:uppercase; color:#0d9488;">DINAS KESEHATAN KABUPATEN</h2>
+                        <h3 style="margin:2px 0 0 0; font-size:12px; font-weight:bold; text-transform:uppercase;">PUSKESMAS PEMBANTU (PUSTU) SEHATDESA</h3>
+                        <p style="margin:2px 0 0 0; font-size:9px; color:#4b5563; font-style:italic;">Jl. Raya Balai Desa No. 12, Kode Pos 12345</p>
+                    </div>
+                </div>
+                
+                <h3 style="text-align:center; text-decoration:underline; font-size:13px; font-weight:bold; margin-bottom:2px; text-transform:uppercase;">SURAT RUJUKAN PUSKESMAS</h3>
+                <p style="text-align:center; font-size:10.5px; color:#4b5563; margin:0 0 16px 0;">Nomor Surat: <span id="ref-letter-no">SR/SAYANGI/2026/001</span></p>
+                
+                <table style="width:100%; font-size:11px; border-collapse:collapse; margin-bottom:14px;">
+                    <tr>
+                        <td style="width:120px; padding:3px 0; vertical-align:top;">Kepada Yth. Bpk/Ibu Dokter</td>
+                        <td style="width:10px; padding:3px 0; vertical-align:top;">:</td>
+                        <td style="padding:3px 0; font-weight:bold; vertical-align:top;" id="ref-receiver">Puskesmas Kecamatan Garuda</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 0; vertical-align:top;">Di</td>
+                        <td style="padding:3px 0; vertical-align:top;">:</td>
+                        <td style="padding:3px 0; vertical-align:top;" id="ref-location">Kecamatan Garuda</td>
+                    </tr>
+                </table>
+                
+                <p style="font-size:11px; line-height:1.5; margin-bottom:12px;">Bersama ini kami kirimkan rujukan pasien pemeriksaan Booth Kesehatan Mandiri Sayangi dengan rincian data sebagai berikut:</p>
+                
+                <h4 style="font-size:10.5px; text-transform:uppercase; border-bottom:1px solid #111827; padding-bottom:3px; margin:0 0 8px 0; font-weight:bold; color:#0d9488;">I. IDENTITAS PASIEN</h4>
+                <table style="width:100%; font-size:11px; border-collapse:collapse; margin-bottom:14px; margin-left:10px;">
+                    <tr>
+                        <td style="width:140px; padding:3px 0;">Nama Lengkap</td>
+                        <td style="width:10px; padding:3px 0;">:</td>
+                        <td style="padding:3px 0; font-weight:bold;" id="ref-pat-name">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 0;">NIK / No. Identitas</td>
+                        <td style="padding:3px 0;">:</td>
+                        <td style="padding:3px 0; font-family:monospace; font-weight:bold;" id="ref-pat-nik">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 0;">Umur / Jenis Kelamin</td>
+                        <td style="padding:3px 0;">:</td>
+                        <td style="padding:3px 0;" id="ref-pat-age-gender">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 0;">Alamat Lengkap</td>
+                        <td style="padding:3px 0;">:</td>
+                        <td style="padding:3px 0;" id="ref-pat-address">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 0;">Riwayat Kronis</td>
+                        <td style="padding:3px 0;">:</td>
+                        <td style="padding:3px 0; color:#dc2626; font-weight:600;" id="ref-pat-history">-</td>
+                    </tr>
+                </table>
+                
+                <h4 style="font-size:10.5px; text-transform:uppercase; border-bottom:1px solid #111827; padding-bottom:3px; margin:14px 0 8px 0; font-weight:bold; color:#0d9488;">II. HASIL PEMERIKSAAN FISIK &amp; VITAL SIGN</h4>
+                <table style="width:100%; font-size:11px; border-collapse:collapse; margin-bottom:14px; margin-left:10px;">
+                    <tr>
+                        <td style="width:140px; padding:3px 0;">Suhu Tubuh (Dahi)</td>
+                        <td style="width:10px; padding:3px 0;">:</td>
+                        <td style="padding:3px 0;" id="ref-vitals-temp">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 0; vertical-align:top;">Asimetri Termal Kaki</td>
+                        <td style="padding:3px 0; vertical-align:top;">:</td>
+                        <td style="padding:3px 0; font-weight:bold; color:#dc2626;" id="ref-thermal-asym">-</td>
+                    </tr>
+                </table>
+                
+                <h4 style="font-size:10.5px; text-transform:uppercase; border-bottom:1px solid #111827; padding-bottom:3px; margin:14px 0 8px 0; font-weight:bold; color:#0d9488;">III. RESUME AI &amp; DIAGNOSIS SEMENTARA</h4>
+                <div style="font-size:11px; line-height:1.55; margin-bottom:20px; border:1px solid #ccc; padding:10px; border-radius:6px; background:#f9fafb; font-style:italic;" id="ref-ai-summary">
+                    -
+                </div>
+                
+                <div style="margin-top:30px; display:flex; justify-content:space-between; font-size:11px;">
+                    <div>
+                        <p style="margin:0 0 50px 0;">Mengetahui,</p>
+                        <p style="margin:0; font-weight:bold; text-decoration:underline;">(____________________)</p>
+                        <p style="margin:0; color:#4b5563; font-size:9px;">Keluarga Pasien / Wali</p>
+                    </div>
+                    <div style="text-align:right;">
+                        <p style="margin:0 0 50px 0;">Garuda, <span id="ref-date">17 Juli 2026</span><br>Bidan Desa / Kader Medis,</p>
+                        <p style="margin:0; font-weight:bold; text-decoration:underline;">( Ibu Bidan Desa )</p>
+                        <p style="margin:0; color:#4b5563; font-size:9px;">Booth Kesehatan Sayangi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-</div><!-- /app-container -->
+    <!-- ═══ Modal WhatsApp Dispatcher ════════════════════════════════════ -->
+    <div id="wa-modal" class="modal-overlay" style="display:none;">
+        <div class="glass-panel" style="width:400px; padding:20px; display:flex; flex-direction:column; gap:16px; border-color:var(--border); background:var(--surface); color:var(--text-1); margin:auto; position:relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:8px;">
+                <span style="font-weight:600; font-size:11px; color:var(--text-2); text-transform:uppercase; letter-spacing:0.5px;">Notifikasi WhatsApp Keluarga</span>
+                <button onclick="closeWaModal()" style="background:none; border:none; font-size:18px; color:var(--text-3); cursor:pointer; line-height:1;">×</button>
+            </div>
+            
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <div>
+                    <label class="sim-form-label">Nomor WhatsApp Keluarga</label>
+                    <input class="sim-input" type="text" id="wa-phone" placeholder="08xxxxxxxxxx" style="width:100%;">
+                </div>
+                <div>
+                    <label class="sim-form-label">Isi Pesan Notifikasi (Draf Otomatis)</label>
+                    <textarea class="sim-input" id="wa-message" rows="8" style="width:100%; font-family:inherit; font-size:11px; line-height:1.4; resize:vertical; background:var(--surface); color:var(--text-1); border-color:var(--border);"></textarea>
+                </div>
+                
+                <div style="display:flex; gap:8px; margin-top:4px;">
+                    <button class="btn btn-primary" onclick="sendWhatsAppDirect()" style="flex:2; font-size:12px; height:34px; margin:0;">
+                        📲 Kirim via WhatsApp Web
+                    </button>
+                    <button class="btn btn-outline" onclick="closeWaModal()" style="flex:1; font-size:12px; height:34px; margin:0;">
+                        Batal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script src="app.js"></script>
+</div>
+
+<script>
+    // Custom UI helpers for Full-Screen Landing Page and Modals
+    function scrollToRoles() {
+        const landing = document.getElementById('landing-page');
+        const roles = document.getElementById('roles');
+        if (landing && roles) {
+            landing.scrollTo({
+                top: roles.offsetTop - 80,
+                behavior: 'smooth'
+            });
+        }
+    }
+    
+
+
+    // ─── Sticky Navbar Scroll Transition ───
+    document.addEventListener('DOMContentLoaded', () => {
+        const landing = document.getElementById('landing-page');
+        if (landing) {
+            landing.addEventListener('scroll', () => {
+                const nav = document.querySelector('.landing-navbar');
+                if (nav) {
+                    if (landing.scrollTop > 50) {
+                        nav.classList.add('scrolled');
+                    } else {
+                        nav.classList.remove('scrolled');
+                    }
+                }
+            });
+        }
+    });
+
+    // ─── High-Fidelity GSAP Animations ───
+    document.addEventListener('DOMContentLoaded', () => {
+        // Register GSAP ScrollTrigger plugin
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Respect accessibility settings
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) {
+            console.log('Reduced motion active. Disabling complex animations.');
+            return;
+        }
+
+        // Fade + translateY reveals for hero elements
+        gsap.from('.hero-left h1, .hero-left p, .hero-left .landing-hero-btns', {
+            opacity: 0,
+            y: 40,
+            duration: 1.2,
+            stagger: 0.15,
+            ease: 'power4.out'
+        });
+
+        gsap.from('.hero-right', {
+            opacity: 0,
+            x: 60,
+            duration: 1.4,
+            ease: 'power3.out',
+            delay: 0.3
+        });
+
+        // Staggered reveal for statistics cards
+        gsap.from('.landing-stats .stat-card', {
+            scrollTrigger: {
+                trigger: '.landing-stats',
+                scroller: '#landing-page',
+                start: 'top 85%'
+            },
+            opacity: 0,
+            y: 30,
+            stagger: 0.1,
+            duration: 0.8,
+            ease: 'back.out(1.2)'
+        });
+
+        // Staggered reveal for features cards
+        gsap.from('.features-grid .feature-card', {
+            scrollTrigger: {
+                trigger: '.landing-features',
+                scroller: '#landing-page',
+                start: 'top 80%'
+            },
+            opacity: 0,
+            y: 40,
+            stagger: 0.12,
+            duration: 1.0,
+            ease: 'power3.out'
+        });
+
+        // Number counter animation for statistics cards
+        document.querySelectorAll('.stat-num').forEach(el => {
+            const numText = el.textContent;
+            // Parse numerical part
+            const matches = numText.match(/^([\d.,]+)(.*)$/);
+            if (matches) {
+                const targetVal = parseFloat(matches[1].replace(/,/g, ''));
+                const suffix = matches[2];
+                const obj = { value: 0 };
+                
+                gsap.to(obj, {
+                    scrollTrigger: {
+                        trigger: el,
+                        scroller: '#landing-page',
+                        start: 'top 90%'
+                    },
+                    value: targetVal,
+                    duration: 2.0,
+                    ease: 'power2.out',
+                    onUpdate: () => {
+                        if (targetVal % 1 === 0) {
+                            el.textContent = Math.floor(obj.value).toLocaleString('id-ID') + suffix;
+                        } else {
+                            el.textContent = obj.value.toFixed(1) + suffix;
+                        }
+                    }
+                });
+            }
+        });
+
+        // Cara Kerja (How it Works) step number and progress bar scroll animations
+        gsap.to('.how-progress-bar', {
+            scrollTrigger: {
+                trigger: '.how-steps-container',
+                scroller: '#landing-page',
+                start: 'top 70%',
+                end: 'bottom 40%',
+                scrub: true
+            },
+            width: '100%',
+            ease: 'none'
+        });
+
+        // Toggle active style on step numbers as they enter the screen
+        document.querySelectorAll('.how-step-card').forEach((card, idx) => {
+            ScrollTrigger.create({
+                trigger: card,
+                scroller: '#landing-page',
+                start: 'top 75%',
+                onEnter: () => {
+                    card.querySelector('.step-number').classList.add('active');
+                },
+                onLeaveBack: () => {
+                    card.querySelector('.step-number').classList.remove('active');
+                }
+            });
+        });
+
+        // Cursor-aware micro-parallax on Hero Mockup card
+        const mockup = document.querySelector('.device-mockup-container');
+        const heroSection = document.querySelector('.landing-hero');
+        if (mockup && heroSection) {
+            heroSection.addEventListener('mousemove', (e) => {
+                const rect = heroSection.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                gsap.to(mockup, {
+                    x: x * 0.05,
+                    y: y * 0.05,
+                    rotateY: x * 0.05,
+                    rotateX: -y * 0.05,
+                    duration: 0.6,
+                    ease: 'power2.out'
+                });
+            });
+
+            heroSection.addEventListener('mouseleave', () => {
+                gsap.to(mockup, {
+                    x: 0,
+                    y: 0,
+                    rotateY: 0,
+                    rotateX: 0,
+                    duration: 0.8,
+                    ease: 'power3.out'
+                });
+            });
+        }
+    });
+</script>
+<script src="app.js?v=1.0.16"></script>
 </body>
 </html>
