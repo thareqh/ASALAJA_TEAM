@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SehatDesa Station — Kios Pemeriksaan Kesehatan Mandiri Lansia</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<div class="app-container">
+
+    <!-- ═══ Header ═══════════════════════════════════════════════════════ -->
+    <header class="app-header">
+        <div class="brand">
+            <div class="brand-logo">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 10.5h-5.5V5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v5.5H5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5h5.5V19c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-5.5H19c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <h1>SehatDesa Station</h1>
+                <span><span class="flag-id"></span> Kios Kesehatan Mandiri · Garuda Hack 7.0</span>
+            </div>
+        </div>
+
+        <div class="view-tabs">
+            <button class="tab-btn active" onclick="switchTab('split')">Split View</button>
+            <button class="tab-btn" onclick="switchTab('nakes')">Dashboard Nakes</button>
+            <button class="tab-btn" onclick="switchTab('kiosk')">Kiosk</button>
+        </div>
+
+        <div class="header-controls">
+            <input type="password" id="gemini-key-input"
+                   placeholder="Gemini API Key (opsional)"
+                   title="Masukkan Gemini API Key untuk ringkasan medis AI"
+                   style="width:180px; padding:5px 10px; font-size:11px; font-family:inherit;
+                          border:1px solid var(--border); border-radius:6px; outline:none;
+                          background:#fff; color:var(--text-1);">
+            <button class="btn btn-outline" onclick="testSpeech()" style="flex:none; padding:5px 12px; font-size:11px;">
+                🔊 Tes Suara
+            </button>
+            <div class="sys-status" id="conn-status">
+                <span class="status-dot"></span> Cloud Database
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══ Main Workspace ════════════════════════════════════════════════ -->
+    <main class="main-workspace split-layout">
+
+        <!-- Left: Kiosk Panel -->
+        <div id="split-left-side" class="side-panel">
+            <div class="kiosk-mirror-card" id="kiosk-view-panel">
+                <div class="kiosk-header">
+                    <span class="kiosk-lbl">Tampilan Kios Balai Desa</span>
+                    <span class="kiosk-badge">Online</span>
+                </div>
+
+                <div class="kiosk-screen" id="kiosk-screen">
+
+                    <!-- STATE: IDLE -->
+                    <div class="kiosk-state-panel active" id="kiosk-idle">
+                        <div class="scanner-frame">
+                            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5"
+                                 viewBox="0 0 24 24" style="color:var(--teal);">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504
+                                         1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125
+                                         0 0 1 3.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5
+                                         c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125
+                                         1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5zM13.5
+                                         4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504
+                                         1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125
+                                         1.125 0 0 1 13.5 9.375v-4.5z"/>
+                            </svg>
+                        </div>
+                        <h2 class="kiosk-title">Pindai Kartu QR</h2>
+                        <p class="kiosk-instruction">Dekatkan kartu QR ke kamera kios untuk memulai pemeriksaan rutin.</p>
+                        <div class="kiosk-audio-indicator">
+                            <div class="audio-bars">
+                                <div class="audio-bar"></div>
+                                <div class="audio-bar"></div>
+                                <div class="audio-bar"></div>
+                            </div>
+                            Menunggu scan...
+                        </div>
+                    </div>
+
+                    <!-- STATE: PATIENT_IDENTIFIED -->
+                    <div class="kiosk-state-panel" id="kiosk-patient">
+                        <div class="brand-logo" style="width:44px;height:44px;margin-bottom:14px;">
+                            <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0
+                                         2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                        </div>
+                        <h2 class="kiosk-title">Selamat Datang!</h2>
+                        <p id="kiosk-pat-name" style="font-size:20px;font-weight:700;color:var(--teal);margin-bottom:2px;">Mbah Sri</p>
+                        <p id="kiosk-pat-age" style="font-size:12px;color:var(--text-2);margin-bottom:2px;">72 tahun</p>
+                        <p id="kiosk-pat-history" style="font-size:11px;color:var(--red);margin-bottom:12px;">Riwayat: Diabetes</p>
+                        <p class="kiosk-instruction" style="border-top:1px solid var(--border-soft);padding-top:10px;">
+                            Harap bersiap. Sensor dahi dan sensor jari akan segera aktif.
+                        </p>
+                    </div>
+
+                    <!-- STATE: READING_VITALS -->
+                    <div class="kiosk-state-panel" id="kiosk-vitals">
+                        <div class="kiosk-anim-circle"></div>
+                        <h2 class="kiosk-title">Membaca Vital Sign</h2>
+                        <p class="kiosk-instruction">Tempelkan dahi ke sensor suhu dan masukkan ujung jari ke sensor oximeter.</p>
+                    </div>
+
+                    <!-- STATE: READING_THERMAL -->
+                    <div class="kiosk-state-panel" id="kiosk-thermal">
+                        <div class="scanner-frame" style="width:80px;height:64px;">
+                            <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5"
+                                 viewBox="0 0 24 24" style="color:var(--teal);">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0
+                                         01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0
+                                         18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0
+                                         017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582"/>
+                            </svg>
+                        </div>
+                        <h2 class="kiosk-title">Skrining Termal Kaki</h2>
+                        <p class="kiosk-instruction">Vital sign tercatat! Silakan <strong>lepaskan alas kaki</strong> dan berdiri di atas pijakan thermal.</p>
+                        <div class="kiosk-vitals-display">
+                            <div class="kiosk-vital-bubble"><span>Jantung</span><strong id="kiosk-vit-hr">75</strong></div>
+                            <div class="kiosk-vital-bubble"><span>SpO₂</span><strong id="kiosk-vit-spo2">98</strong></div>
+                            <div class="kiosk-vital-bubble"><span>Suhu</span><strong id="kiosk-vit-temp">36.5</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- STATE: PROCESSING -->
+                    <div class="kiosk-state-panel" id="kiosk-processing">
+                        <div class="kiosk-anim-circle"></div>
+                        <h2 class="kiosk-title">Menganalisis Data</h2>
+                        <p class="kiosk-instruction">Mohon tunggu. Data klinis sedang diproses dan diteruskan ke bidan desa terdekat.</p>
+                    </div>
+
+                    <!-- STATE: COMPLETED -->
+                    <div class="kiosk-state-panel" id="kiosk-completed">
+                        <div style="width:48px;height:48px;border-radius:50%;background:var(--green-light);
+                                    border:2px solid var(--green-border);display:flex;align-items:center;
+                                    justify-content:center;margin-bottom:14px;">
+                            <svg width="24" height="24" fill="none" stroke="var(--green)" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                            </svg>
+                        </div>
+                        <h2 class="kiosk-title" style="color:var(--green);">Pemeriksaan Selesai</h2>
+                        <p class="kiosk-instruction" id="kiosk-res-advise" style="margin-bottom:12px;">
+                            Data Anda telah tersimpan dan diteruskan ke bidan desa.
+                        </p>
+                        <div class="kiosk-vitals-display" style="margin-bottom:14px;">
+                            <div class="kiosk-vital-bubble"><span>Jantung</span><strong id="kiosk-res-hr">75</strong></div>
+                            <div class="kiosk-vital-bubble"><span>SpO₂</span><strong id="kiosk-res-spo2">98</strong></div>
+                            <div class="kiosk-vital-bubble"><span>Suhu</span><strong id="kiosk-res-temp">36.5</strong></div>
+                        </div>
+                        <button class="btn btn-primary" onclick="triggerReset()"
+                                style="flex:none;width:auto;padding:7px 20px;font-size:12px;">
+                            Selesai &amp; Reset Kios
+                        </button>
+                    </div>
+
+                </div><!-- /kiosk-screen -->
+
+                <!-- ═══ Simulator Controls ═══════════════════════════════ -->
+                <div style="padding: 12px 16px; border-top: 1px solid var(--border); background: var(--bg-secondary);">
+                    <p style="font-size: 10px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">
+                        ⚙ Panel Simulasi Demo
+                    </p>
+
+                    <!-- Step 1: Select Patient QR -->
+                    <div style="margin-bottom: 10px;">
+                        <label class="sim-form-label">1. Pilih Pasien (Scan QR)</label>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <select id="sim-patient-select" class="sim-select" style="flex: 1;">
+                                <option value="">-- Pilih Kartu QR Pasien --</option>
+                            </select>
+                            <button class="btn btn-outline" onclick="triggerSimQR()" style="flex:none; padding: 5px 10px; font-size: 11px; white-space: nowrap;">
+                                Scan QR
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Vitals -->
+                    <div style="margin-bottom: 10px;">
+                        <label class="sim-form-label">2. Vital Sign</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+                            <div>
+                                <label class="sim-form-label" style="font-size: 9px;">HR (bpm)</label>
+                                <div style="display:flex; align-items:center; gap:4px;">
+                                    <input type="range" id="sim-hr" min="40" max="140" value="78" step="1" style="flex:1; accent-color:var(--primary);">
+                                    <span id="sim-hr-val" style="font-size:10px; font-weight:600; color:var(--text-primary); min-width:26px;">78</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="sim-form-label" style="font-size: 9px;">SpO₂ (%)</label>
+                                <div style="display:flex; align-items:center; gap:4px;">
+                                    <input type="range" id="sim-spo2" min="80" max="100" value="97" step="1" style="flex:1; accent-color:var(--primary);">
+                                    <span id="sim-spo2-val" style="font-size:10px; font-weight:600; color:var(--text-primary); min-width:26px;">97</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="sim-form-label" style="font-size: 9px;">Suhu (°C)</label>
+                                <div style="display:flex; align-items:center; gap:4px;">
+                                    <input type="range" id="sim-temp" min="35.0" max="40.0" value="36.6" step="0.1" style="flex:1; accent-color:var(--primary);">
+                                    <span id="sim-temp-val" style="font-size:10px; font-weight:600; color:var(--text-primary); min-width:28px;">36.6</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:4px; margin-bottom:6px;">
+                            <button class="preset-chip" data-vpreset onclick="loadVitalsPreset('normal')" style="flex:1; font-size:9px; padding:3px 6px;">Normal</button>
+                            <button class="preset-chip" data-vpreset onclick="loadVitalsPreset('fever')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--amber);">Demam</button>
+                            <button class="preset-chip" data-vpreset onclick="loadVitalsPreset('hypoxia')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--red);">Hipoksia</button>
+                        </div>
+                        <button class="btn btn-outline" onclick="triggerSimVitals()" style="width:100%; padding:5px; font-size:11px;">
+                            Rekam Vital Sign →
+                        </button>
+                    </div>
+
+                    <!-- Step 3: Thermal -->
+                    <div style="margin-bottom: 10px;">
+                        <label class="sim-form-label">3. Thermal Kaki</label>
+                        <div style="display:flex; gap:4px; margin-bottom:6px;">
+                            <button class="preset-chip active" data-case="normal" onclick="document.querySelectorAll('[data-case]').forEach(b=>b.classList.remove('active')); this.classList.add('active')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--green);">Normal</button>
+                            <button class="preset-chip" data-case="inflammatory" onclick="document.querySelectorAll('[data-case]').forEach(b=>b.classList.remove('active')); this.classList.add('active')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--red);">Inflamasi</button>
+                            <button class="preset-chip" data-case="ischemic" onclick="document.querySelectorAll('[data-case]').forEach(b=>b.classList.remove('active')); this.classList.add('active')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--amber);">Iskemia</button>
+                            <button class="preset-chip" data-case="neuropathic" onclick="document.querySelectorAll('[data-case]').forEach(b=>b.classList.remove('active')); this.classList.add('active')" style="flex:1; font-size:9px; padding:3px 6px; color:var(--primary);">Neuropati</button>
+                        </div>
+                        <button class="btn btn-primary" onclick="triggerSimThermal()" style="width:100%; padding:5px; font-size:11px;">
+                            Proses &amp; Simpan →
+                        </button>
+                    </div>
+
+                    <!-- Auto Demo + Reset -->
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn btn-outline" onclick="runDemoWorkflow()" style="flex:1; padding:5px; font-size:10px;">
+                            ⚡ Auto Demo
+                        </button>
+                        <button class="btn btn-outline" onclick="triggerReset()" style="flex:none; padding:5px 10px; font-size:10px; color:var(--red); border-color:var(--red-border);">
+                            Reset
+                        </button>
+                    </div>
+                </div><!-- /simulator controls -->
+
+            </div><!-- /kiosk-mirror-card -->
+        </div><!-- /side-panel -->
+
+        <!-- Right: Medical Dashboard -->
+        <div class="dashboard-panel" id="nakes-dashboard-panel">
+
+            <!-- Dashboard header -->
+            <div class="card-header">
+                <span class="card-title">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6zM13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z"/>
+                    </svg>
+                    Dashboard Tenaga Medis
+                </span>
+                <!-- Filter chips -->
+                <div style="display:flex;gap:6px;">
+                    <button class="preset-chip active" data-feed-filter="ALL" style="flex:none;">Semua</button>
+                    <button class="preset-chip" data-feed-filter="CRITICAL"
+                            style="flex:none;color:var(--red);border-color:var(--red-border);background:var(--red-light);">Kritis</button>
+                    <button class="preset-chip" data-feed-filter="WARNING"
+                            style="flex:none;color:var(--amber);border-color:var(--amber-border);background:var(--amber-light);">Peringatan</button>
+                    <button class="preset-chip" data-feed-filter="NORMAL"
+                            style="flex:none;color:var(--green);border-color:var(--green-border);background:var(--green-light);">Normal</button>
+                </div>
+            </div>
+
+            <!-- Dashboard body -->
+            <div class="card-body patient-feed-container">
+
+                <!-- Patient list -->
+                <div class="feed-list" id="patient-feed">
+                    <div class="empty-placeholder"><p>Memuat data pasien...</p></div>
+                </div>
+
+                <!-- Detail + history column -->
+                <div class="detail-right-col">
+                    <div class="detail-view" id="detail-panel">
+                        <div class="empty-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501
+                                         20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12
+                                         21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
+                            </svg>
+                            <p>Pilih pasien untuk melihat rekam medis lengkap.</p>
+                        </div>
+                    </div>
+
+                    <!-- Visit history strip -->
+                    <div class="history-panel">
+                        <h4 class="section-label" style="margin-bottom:8px;">
+                            Riwayat Kunjungan Sebelumnya
+                        </h4>
+                        <div id="patient-history" style="display:flex;flex-direction:column;gap:4px;">
+                            <div style="font-size:11px;color:var(--text-3);text-align:center;">
+                                Pilih pasien untuk memuat tren longitudinal.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /card-body -->
+        </div><!-- /dashboard-panel -->
+
+    </main>
+
+    <!-- ═══ Registration Drawer ═══════════════════════════════════════════ -->
+    <div id="registration-drawer" class="glass-panel"
+         style="display:none;position:fixed;bottom:76px;right:20px;width:320px;z-index:100;
+                max-height:80vh;overflow-y:auto;">
+        <div class="card-header">
+            <span class="card-title">Daftarkan Warga Baru</span>
+            <button onclick="document.getElementById('registration-drawer').style.display='none'"
+                    style="background:none;border:none;font-size:16px;color:var(--text-3);cursor:pointer;
+                           line-height:1;padding:0 2px;">×</button>
+        </div>
+        <div style="padding:14px;">
+            <form id="register-patient-form" style="display:flex;flex-direction:column;gap:10px;">
+                <div>
+                    <label class="sim-form-label">Nama Lengkap</label>
+                    <input class="sim-input" type="text" id="reg-name" required placeholder="Contoh: Mbah Maimunah">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div>
+                        <label class="sim-form-label">Umur</label>
+                        <input class="sim-input" type="number" id="reg-age" required min="50" max="110" placeholder="70">
+                    </div>
+                    <div>
+                        <label class="sim-form-label">Gender</label>
+                        <select class="sim-select" id="reg-gender" required>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="sim-form-label">Kode QR (otomatis)</label>
+                    <input class="sim-input" type="text" id="reg-qr" readonly style="color:var(--text-3);">
+                </div>
+                <div>
+                    <label class="sim-form-label">Nomor Telepon Keluarga</label>
+                    <input class="sim-input" type="text" id="reg-phone" placeholder="081xxxxxxxx">
+                </div>
+                <div>
+                    <label class="sim-form-label">Alamat Dusun / RT</label>
+                    <input class="sim-input" type="text" id="reg-address" placeholder="RT 02/RW 03, Dusun Kidul">
+                </div>
+                <div>
+                    <label class="sim-form-label">Riwayat Penyakit</label>
+                    <input class="sim-input" type="text" id="reg-history" placeholder="Hipertensi / Asam Urat / Stroke">
+                </div>
+                <button class="btn btn-primary" type="submit" style="margin-top:4px;">Simpan Data Warga</button>
+            </form>
+
+            <!-- QR Code Success View -->
+            <div id="register-success-qr" style="display:none; flex-direction:column; gap:14px; text-align:center; align-items:center; padding:10px 0;">
+                <div style="color: var(--teal); font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; justify-content: center;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Pendaftaran Berhasil!
+                </div>
+                
+                <div id="reg-qrcode-container" style="background:#ffffff; padding:16px; border-radius:12px; border:1px solid var(--border); display:inline-block; box-shadow:0 4px 12px rgba(0,0,0,0.05); margin: 0 auto;"></div>
+                
+                <div>
+                    <div id="reg-success-name" style="font-size: 15px; font-weight: 700; color: var(--text-1);"></div>
+                    <div id="reg-success-id" style="font-size: 11px; font-family: monospace; color: var(--text-2); margin-top: 2px;"></div>
+                </div>
+
+                <div style="display:flex; gap:6px; width:100%; margin-top:8px;">
+                    <button class="btn btn-outline" onclick="downloadRegisteredQR()" style="flex:1; padding:7px; font-size:11px;">
+                        ⬇️ Unduh QR
+                    </button>
+                    <button class="btn btn-outline" onclick="printRegisteredQR()" style="flex:1; padding:7px; font-size:11px;">
+                        🖨️ Cetak
+                    </button>
+                </div>
+                
+                <button class="btn btn-primary" onclick="resetRegistrationForm()" style="width:100%; padding:8px; font-size:12px; margin-top:6px;">
+                    Daftar Warga Lain
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ QR Code Viewer Modal ══════════════════════════════════════════ -->
+    <div id="qr-viewer-modal" class="modal-overlay" style="display:none;">
+        <div class="glass-panel" style="width:300px; padding:20px; text-align:center; display:flex; flex-direction:column; gap:16px; border-color:var(--border); background:var(--surface); color:var(--text-1);">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:8px;">
+                <span style="font-weight:600; font-size:11px; color:var(--text-2); text-transform:uppercase; letter-spacing:0.5px;">Kartu QR Warga</span>
+                <button onclick="closeQRModal()" style="background:none; border:none; font-size:18px; color:var(--text-3); cursor:pointer; line-height:1;">×</button>
+            </div>
+            
+            <div id="modal-qrcode-container" style="background:#ffffff; padding:16px; border-radius:12px; border:1px solid var(--border); display:inline-block; margin:0 auto; box-shadow:0 4px 12px rgba(0,0,0,0.05);"></div >
+            
+            <div>
+                <div id="modal-qr-name" style="font-size:16px; font-weight:700; color:var(--text-1);"></div>
+                <div id="modal-qr-id" style="font-size:11px; font-family:monospace; color:var(--text-2); margin-top:2px;"></div>
+            </div>
+            
+            <div style="display:flex; gap:8px; width:100%;">
+                <button class="btn btn-outline" onclick="downloadModalQR()" style="flex:1; padding:8px; font-size:11px;">⬇️ Unduh</button>
+                <button class="btn btn-outline" onclick="printModalQR()" style="flex:1; padding:8px; font-size:11px;">🖨️ Cetak</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAB: Toggle registration drawer -->
+    <button class="btn btn-primary"
+            onclick="const dr=document.getElementById('registration-drawer');dr.style.display=dr.style.display==='none'?'block':'none';"
+            style="position:fixed;bottom:20px;right:20px;width:auto;flex:none;padding:9px 18px;
+                   border-radius:50px;font-size:12px;z-index:99;
+                   box-shadow:0 2px 8px rgba(13,148,136,0.25);">
+        + Warga Baru
+    </button>
+
+</div><!-- /app-container -->
+
+<script src="app.js"></script>
+</body>
+</html>
